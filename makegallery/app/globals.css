@@ -1,0 +1,365 @@
+:root {
+  --sand: #aa9687;
+  --ink: #1d1714;
+  --lime: #dfff1e;
+  --cyan: #83e7ff;
+  --sage: #b8d7ad;
+  --stone: #d2cbc2;
+  --cream: #f0e9cf;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--sand);
+  color: var(--ink);
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  border: 0;
+  padding: 0;
+  font: inherit;
+}
+
+.reference-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--sand);
+}
+
+.collage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 760px;
+  height: 310px;
+  transform: translate(-34%, -47%);
+}
+
+.image-frame {
+  position: absolute;
+  cursor: pointer;
+  background: transparent;
+  perspective: 1400px;
+  box-shadow: 0 18px 34px rgba(38, 27, 21, 0.14);
+  transition: box-shadow 320ms ease;
+}
+
+.image-frame:focus-visible {
+  outline: 2px solid rgba(29, 23, 20, 0.5);
+  outline-offset: 5px;
+}
+
+.frame-main {
+  left: 0;
+  top: 0;
+  z-index: 3;
+  width: 178px;
+  height: 248px;
+  border: 3px solid #161616;
+}
+
+.frame-sky {
+  left: 178px;
+  top: 4px;
+  z-index: 2;
+  width: 150px;
+  height: 238px;
+}
+
+.frame-green {
+  left: 326px;
+  top: 94px;
+  z-index: 3;
+  width: 112px;
+  height: 146px;
+}
+
+.frame-stone {
+  left: 438px;
+  top: -2px;
+  z-index: 1;
+  width: 176px;
+  height: 244px;
+}
+
+.frame-edge {
+  left: 614px;
+  top: 92px;
+  z-index: 2;
+  width: 156px;
+  height: 150px;
+}
+
+.flip-card-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.flip-card-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.flip-face {
+  position: absolute;
+  inset: 0;
+  display: block;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.flip-back {
+  background: #0f0f0f;
+  overflow: hidden;
+  transform: rotateY(180deg);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.flip-back-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(1.04) brightness(0.92);
+}
+
+.flip-back-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 12px 12px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.flip-back-name {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.flip-back-blurb {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.18;
+  color: #f5f5f5;
+  letter-spacing: -0.02em;
+}
+
+.poster-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--card);
+}
+
+.poster-card::before {
+  position: absolute;
+  inset: 0 0 35%;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 42%),
+    var(--card);
+  content: "";
+}
+
+.poster-card::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 35%;
+  border-top: 1px solid rgba(10, 10, 10, 0.18);
+  background: #f4f1df;
+  content: "";
+}
+
+.poster-title {
+  position: absolute;
+  left: 6%;
+  right: 18%;
+  bottom: 5.5%;
+  z-index: 2;
+  color: #0a0a0a;
+  font-size: clamp(13px, 2vw, 29px);
+  font-weight: 950;
+  line-height: 0.92;
+  letter-spacing: -0.08em;
+  text-align: left;
+}
+
+.poster-title::before {
+  position: absolute;
+  left: 0;
+  top: -13px;
+  width: 42px;
+  height: 3px;
+  background: #0a0a0a;
+  content: "";
+}
+
+.frame-green .poster-title,
+.frame-edge .poster-title {
+  font-size: clamp(12px, 1.5vw, 20px);
+}
+
+.pixel-mark {
+  position: absolute;
+  z-index: 3;
+  mix-blend-mode: multiply;
+}
+
+.pixel-mark-top {
+  width: 18px;
+  height: 18px;
+  top: 8px;
+  left: 8px;
+  background: conic-gradient(#111 25%, transparent 0 50%, #111 0 75%, transparent 0) 0 0 / 9px 9px;
+  opacity: 0.9;
+  transform: scale(0.86);
+  transform-origin: top left;
+}
+
+.pixel-mark-bottom {
+  right: 8px;
+  bottom: 8px;
+  width: 16px;
+  height: 16px;
+  background:
+    radial-gradient(circle at 25% 25%, #111 0 3px, transparent 4px),
+    radial-gradient(circle at 75% 75%, #111 0 3px, transparent 4px);
+}
+
+.tone-lime {
+  --card: var(--lime);
+}
+
+.tone-cyan {
+  --card: var(--cyan);
+}
+
+.tone-sage {
+  --card: var(--sage);
+}
+
+.tone-stone {
+  --card: var(--stone);
+}
+
+.tone-cream {
+  --card: var(--cream);
+}
+
+.image-frame.is-active {
+  z-index: 8;
+  box-shadow: 0 28px 48px rgba(38, 27, 21, 0.28);
+  outline: 3px solid #161616;
+  outline-offset: 0;
+}
+
+.image-frame.is-active::after {
+  position: absolute;
+  left: 50%;
+  bottom: -36px;
+  width: 70px;
+  height: 5px;
+  transform: translateX(-50%);
+  background: rgba(29, 23, 20, 0.2);
+  content: "";
+}
+
+.counter {
+  position: absolute;
+  right: 24px;
+  bottom: 22px;
+  z-index: 10;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: rgba(29, 23, 20, 0.55);
+}
+
+.slide-hit {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 22vw;
+  background: transparent;
+  cursor: pointer;
+}
+
+.slide-prev {
+  left: 0;
+}
+
+.slide-next {
+  right: 0;
+}
+
+@media (max-width: 720px) {
+  .collage {
+    left: 50%;
+    top: 50%;
+    width: 240px;
+    height: 320px;
+    transform: translate(-50%, -50%);
+  }
+
+  .frame-main {
+    left: 0;
+    top: 0;
+    width: 240px;
+    height: 320px;
+    border: 3px solid #161616;
+  }
+
+  .frame-sky,
+  .frame-green,
+  .frame-stone,
+  .frame-edge {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .image-frame.is-active::after {
+    bottom: -28px;
+  }
+
+  .poster-title {
+    font-size: 26px;
+  }
+
+  .flip-back-blurb {
+    font-size: 15px;
+  }
+
+  .counter {
+    right: 16px;
+    bottom: 16px;
+  }
+}
