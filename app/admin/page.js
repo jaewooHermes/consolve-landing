@@ -41,10 +41,10 @@ function statusLabel(post) {
   return "review";
 }
 
-export default function AdminPage() {
-  const posts = listAllPosts();
-  const summary = summarizePosts();
-  const pipelineJobs = listPipelineJobs().slice(0, 8);
+export default async function AdminPage() {
+  const posts = await listAllPosts();
+  const summary = await summarizePosts();
+  const pipelineJobs = (await listPipelineJobs()).slice(0, 8);
 
   return (
     <main className="admin-shell">

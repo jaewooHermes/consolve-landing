@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPublicPostBySlug, listPublicPosts, formatDate } from "../../../lib/cms";
+import { getPublicPostBySlug, formatDate } from "../../../lib/cms";
 
 function escapeHtml(value) {
   return String(value)
@@ -57,13 +57,15 @@ function markdownToHtml(markdown) {
   return blocks.join("\n");
 }
 
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
-  return listPublicPosts().map((post) => ({ slug: post.slug }));
+  return [];
 }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const post = getPublicPostBySlug(slug);
+  const post = await getPublicPostBySlug(slug);
   if (!post) {
     return {
       title: "글을 찾을 수 없습니다 | Consovle Blog",
@@ -90,7 +92,7 @@ export async function generateMetadata({ params }) {
 
 export default async function BlogPostPage({ params }) {
   const { slug } = await params;
-  const post = getPublicPostBySlug(slug);
+  const post = await getPublicPostBySlug(slug);
   if (!post) notFound();
 
   const articleJsonLd = {

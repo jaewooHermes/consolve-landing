@@ -2,6 +2,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const { createClient } = require('@libsql/client');
 
 const consolveRoot = process.cwd();
 const defaultPipelineApp = process.env.BLOG_SEO_AUTOMATION_APP_DIR || '/workspace/blog-seo-automation/apps/web';
@@ -37,6 +38,30 @@ function readJson(filePath, fallback) {
 function writeJson(filePath, value) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, JSON.stringify(value, null, 2) + '\n', 'utf8');
+}
+
+function tursoUrl() {
+  return process.env.TURSO_DATABASE_URL || process.env.LIBSQL_URL || '';
+}
+
+function tursoAuthToken() {
+  return process.env.TURSO_AUTH_TOKEN || process.env.LIBSQL_AUTH_TOKEN || undefined;
+}
+
+function getDb() {
+  const url = tursoUrl();
+  if (!url) return null;
+  return createClient({ url, authToken: tursoAuthToken() });
+}
+
+async function ensureCmsSchema(db) {
+  if (!db) return;
+  await db.batch([
+    `CREATE TABLE IF NOT EXISTS posts (slug TEXT PRIMARY KEY, id TEXT, status TEXT NOT NULL, title TEXT NOT NULL, excerpt TEXT, target_keyword TEXT, published_at TEXT, updated_at TEXT, payload TEXT NOT NULL)`,
+    `CREATE INDEX IF NOT EXISTS idx_posts_status_published ON posts(status, published_at)`,
+    `CREATE TABLE IF NOT EXISTS content_jobs (id TEXT PRIMARY KEY, keyword TEXT, project_name TEXT, status TEXT, post_slug TEXT, created_at TEXT, updated_at TEXT, payload TEXT NOT NULL)`,
+    `CREATE INDEX IF NOT EXISTS idx_content_jobs_created ON content_jobs(created_at)`,
+  ]);
 }
 
 function parseJsonResult(stdout) {
@@ -109,15 +134,7 @@ function normalizeGeneratedPost(sourcePost, json, keyword) {
   };
 }
 
-function persistToConsolve({ post, json, keyword }) {
-  const postsPath = path.join(consolveRoot, 'data', 'posts.json');
-  const jobsPath = path.join(consolveRoot, 'data', 'content-pipeline-jobs.json');
-
-  const posts = readJson(postsPath, []);
-  const withoutSameSlug = posts.filter((item) => item.slug !== post.slug);
-  writeJson(postsPath, [post, ...withoutSameSlug]);
-
-  const jobs = readJson(jobsPath, []);
+async function persistToConsolve({ post, json, keyword }) {
   const job = {
     id: json.job?.id || `job_${Date.now()}`,
     keyword,
@@ -133,12 +150,41 @@ function persistToConsolve({ post, json, keyword }) {
     wikiUpdate: json.wikiUpdate || null,
     deployUpdate: json.deployUpdate || null,
   };
+
+  const db = getDb();
+  if (db) {
+    await ensureCmsSchema(db);
+    await db.batch([
+      {
+        sql: `INSERT INTO posts (slug, id, status, title, excerpt, target_keyword, published_at, updated_at, payload)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+          ON CONFLICT(slug) DO UPDATE SET id = excluded.id, status = excluded.status, title = excluded.title, excerpt = excluded.excerpt, target_keyword = excluded.target_keyword, published_at = excluded.published_at, updated_at = excluded.updated_at, payload = excluded.payload`,
+        args: [post.slug, post.id || post.slug, post.status, post.title, post.excerpt || null, post.targetKeyword || null, post.publishedAt || null, post.updatedAt || null, JSON.stringify(post)],
+      },
+      {
+        sql: `INSERT INTO content_jobs (id, keyword, project_name, status, post_slug, created_at, updated_at, payload)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          ON CONFLICT(id) DO UPDATE SET keyword = excluded.keyword, project_name = excluded.project_name, status = excluded.status, post_slug = excluded.post_slug, created_at = excluded.created_at, updated_at = excluded.updated_at, payload = excluded.payload`,
+        args: [job.id, job.keyword, job.projectName, job.status, job.postSlug, job.createdAt, job.updatedAt, JSON.stringify(job)],
+      },
+    ]);
+    return { adapter: 'turso', postSlug: post.slug, job };
+  }
+
+  const postsPath = path.join(consolveRoot, 'data', 'posts.json');
+  const jobsPath = path.join(consolveRoot, 'data', 'content-pipeline-jobs.json');
+
+  const posts = readJson(postsPath, []);
+  const withoutSameSlug = posts.filter((item) => item.slug !== post.slug);
+  writeJson(postsPath, [post, ...withoutSameSlug]);
+
+  const jobs = readJson(jobsPath, []);
   writeJson(jobsPath, [job, ...jobs.filter((item) => item.id !== job.id && item.postSlug !== post.slug)].slice(0, 100));
 
-  return { postsPath, jobsPath, job };
+  return { adapter: 'json', postsPath, jobsPath, job };
 }
 
-function main() {
+async function main() {
   const options = parseArgs(process.argv.slice(2));
   const pipelineApp = path.resolve(options.pipelineApp || defaultPipelineApp);
   let sourcePost;
@@ -160,7 +206,7 @@ function main() {
   }
 
   const reviewPost = normalizeGeneratedPost(sourcePost, pipelineJson, options.keyword);
-  const persistence = options.persist ? persistToConsolve({ post: reviewPost, json: pipelineJson, keyword: options.keyword }) : null;
+  const persistence = options.persist ? await persistToConsolve({ post: reviewPost, json: pipelineJson, keyword: options.keyword }) : null;
 
   const output = {
     ok: true,
@@ -183,9 +229,7 @@ function main() {
   console.log(JSON.stringify(output, null, 2));
 }
 
-try {
-  main();
-} catch (error) {
+main().catch((error) => {
   console.error(String(error && error.stack ? error.stack : error));
   process.exit(1);
-}
+});

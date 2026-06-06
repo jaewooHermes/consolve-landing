@@ -10,9 +10,11 @@
     "admin:publish": "node scripts/admin-posts.js publish",
     "admin:delete": "node scripts/admin-posts.js delete",
     "content:review": "NODE_NO_WARNINGS=1 node scripts/discord-review-content.js",
-    "content:create": "NODE_NO_WARNINGS=1 node scripts/content-command-router.js"
+    "content:create": "NODE_NO_WARNINGS=1 node scripts/content-command-router.js",
+    "turso:migrate": "NODE_NO_WARNINGS=1 node scripts/turso-migrate.js"
   },
   "dependencies": {
+    "@libsql/client": "^0.17.3",
     "next": "^16.2.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"

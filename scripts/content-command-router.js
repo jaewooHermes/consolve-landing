@@ -143,9 +143,11 @@ function main() {
   const reviewStdout = run(process.execPath, reviewArgs);
   const review = parseJsonResult(reviewStdout);
   const slug = review.cmsPost.slug;
-  const sync = options.noSync
-    ? { ok: true, skipped: true, reason: 'no-sync requested' }
-    : syncToGitAndVercel({ slug, dryRun: options.dryRun, skipPush: options.skipPush, skipDeploy: options.skipDeploy });
+  const sync = review.persistence?.adapter === 'turso'
+    ? { ok: true, skipped: true, adapter: 'turso', reason: 'Turso CMS writes are live; GitHub commit/Vercel deploy not required for content visibility' }
+    : options.noSync
+      ? { ok: true, skipped: true, reason: 'no-sync requested' }
+      : syncToGitAndVercel({ slug, dryRun: options.dryRun, skipPush: options.skipPush, skipDeploy: options.skipDeploy });
 
   const result = {
     ok: true,

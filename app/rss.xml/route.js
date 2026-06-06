@@ -10,7 +10,7 @@ function escapeXml(value) {
 }
 
 export async function GET() {
-  const posts = listPublicPosts();
+  const posts = await listPublicPosts();
   const items = posts
     .map(
       (post) => `

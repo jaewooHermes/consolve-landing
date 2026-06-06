@@ -1,8 +1,8 @@
 import { listPublicPosts } from "../lib/cms";
 
-export default function sitemap() {
+export default async function sitemap() {
   const now = new Date();
-  const posts = listPublicPosts().map((post) => ({
+  const posts = (await listPublicPosts()).map((post) => ({
     url: `https://consolve.kr/blog/${post.slug}`,
     lastModified: post.updatedAt ? new Date(post.updatedAt) : now,
     changeFrequency: "weekly",
