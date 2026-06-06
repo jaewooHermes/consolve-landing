@@ -1250,6 +1250,55 @@ button {
   gap: var(--space-3);
 }
 
+.admin-muted {
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: var(--text-base);
+  line-height: 1.7;
+}
+
+.admin-pipeline-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(180px, 0.8fr) auto auto;
+  gap: var(--space-3);
+  align-items: end;
+}
+
+.admin-pipeline-form label {
+  display: grid;
+  gap: var(--space-2);
+  color: var(--muted-strong);
+  font-size: var(--text-sm);
+  font-weight: 900;
+}
+
+.admin-pipeline-form input:not([type="checkbox"]) {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.22);
+  padding: var(--space-4);
+  color: #fff;
+  font: inherit;
+}
+
+.admin-pipeline-form button {
+  border: 0;
+  border-radius: var(--radius);
+  background: #f8f8f4;
+  padding: var(--space-4) var(--space-5);
+  color: #111;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.admin-checkbox {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  min-height: 52px;
+}
+
 .admin-status-list {
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
@@ -1314,7 +1363,8 @@ button {
 
 @media (max-width: 720px) {
   .admin-grid,
-  .admin-post-list article {
+  .admin-post-list article,
+  .admin-pipeline-form {
     grid-template-columns: 1fr;
   }
 

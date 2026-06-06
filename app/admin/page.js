@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { listAllPosts, summarizePosts, formatDate, isPublicPost } from "../../lib/cms";
+import { listPipelineJobs } from "../../lib/content-pipeline";
 
 export const metadata = {
   title: "Consolve Admin — Blog Command Center",
@@ -12,6 +13,11 @@ export const metadata = {
 };
 
 const commands = [
+  {
+    label: "콘텐츠 파이프라인 실행",
+    command: "npm run admin:pipeline -- --keyword \"카페24 쇼핑몰 SEO 자동화\"",
+    note: "키워드 → 브리프 → 게이트 → CMS draft 패키지까지 생성합니다.",
+  },
   {
     label: "발행 글 확인",
     command: "npm run admin:posts -- --status published",
@@ -37,6 +43,7 @@ const commands = [
 export default function AdminPage() {
   const posts = listAllPosts();
   const summary = summarizePosts();
+  const pipelineJobs = listPipelineJobs().slice(0, 8);
 
   return (
     <main className="admin-shell">
@@ -75,6 +82,53 @@ export default function AdminPage() {
             <span key={status}>{status}: {count}</span>
           ))}
         </div>
+      </section>
+
+      <section className="admin-panel" aria-label="콘텐츠 파이프라인 실행">
+        <h2>콘텐츠 파이프라인 실행</h2>
+        <p className="admin-muted">
+          기존 콘텐츠 자동화 흐름을 admin에 연결했습니다. 키워드를 넣으면 Google 우선 브리프, AI 답변 보강, 네이버 발견성 체크를 거쳐 CMS draft 패키지를 만듭니다.
+        </p>
+        <form className="admin-pipeline-form" action="/api/admin/content-pipeline" method="post">
+          <label>
+            <span>키워드 / 주제</span>
+            <input name="keyword" placeholder="예: 카페24 쇼핑몰 SEO 자동화" required />
+          </label>
+          <label>
+            <span>프로젝트</span>
+            <input name="projectName" defaultValue="consolve" />
+          </label>
+          <label className="admin-checkbox">
+            <input type="checkbox" name="publish" value="true" />
+            <span>바로 published로 생성</span>
+          </label>
+          <button type="submit">파이프라인 실행</button>
+        </form>
+        <p className="admin-muted">
+          기본값은 안전하게 draft입니다. public blog 노출은 여전히 published + publishedAt 조건을 통과해야 합니다.
+        </p>
+      </section>
+
+      <section className="admin-panel" aria-label="최근 파이프라인 작업">
+        <h2>최근 파이프라인 작업</h2>
+        {pipelineJobs.length ? (
+          <div className="admin-post-list">
+            {pipelineJobs.map((job) => (
+              <article key={job.id}>
+                <div>
+                  <strong>{job.keyword}</strong>
+                  <span>{job.id} · {job.projectName}</span>
+                </div>
+                <div className="admin-post-meta">
+                  <span>{job.status}</span>
+                  <span>{job.postSlug}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="admin-muted">아직 admin에서 실행한 파이프라인 작업이 없습니다.</p>
+        )}
       </section>
 
       <section className="admin-panel" aria-label="관리 명령어">
