@@ -1,7 +1,7 @@
 [
   {
     "id": "review_post_4cd952d5ab1c",
-    "status": "review",
+    "status": "published",
     "title": "웹사이트가 있어야 하는 이유: 웹사이트가 있어야 하는 이유의 핵심 기준은 무엇인가",
     "slug": "keyword-518f5a47",
     "projectName": "consolve",
@@ -706,8 +706,8 @@
     ],
     "draftMarkdownPath": "drafts/consolve/keyword-518f5a47.md",
     "createdAt": "2026-06-06T13:49:21.778Z",
-    "updatedAt": "2026-06-06T13:49:22.061Z",
-    "publishedAt": null,
+    "updatedAt": "2026-06-06T13:52:08.522Z",
+    "publishedAt": "2026-06-06T13:52:08.522Z",
     "author": "Consolve",
     "source": "blog-seo-automation",
     "sourcePostId": "post_4cd952d5ab1c",
