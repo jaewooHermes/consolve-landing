@@ -12,6 +12,8 @@ export const metadata = {
   },
 };
 
+export const dynamic = "force-dynamic";
+
 const commands = [
   {
     label: "발행 글 확인",

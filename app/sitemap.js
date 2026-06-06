@@ -1,5 +1,7 @@
 import { listPublicPosts } from "../lib/cms";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap() {
   const now = new Date();
   const posts = (await listPublicPosts()).map((post) => ({
