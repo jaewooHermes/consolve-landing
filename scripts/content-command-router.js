@@ -86,7 +86,7 @@ function gitStatus() {
 }
 
 function makeAskpass(token) {
-  const file = path.join(os.tmpdir(), `consolve-git-askpass-${process.pid}.sh`);
+  const file = path.join(REPO_ROOT, `.git`, `consolve-git-askpass-${process.pid}.sh`);
   fs.writeFileSync(file, `#!/bin/sh\ncase "$1" in\n*Username*) printf '%s\\n' 'x-access-token' ;;\n*) printf '%s\\n' '${String(token).replace(/'/g, `'\\''`)}' ;;\nesac\n`, { mode: 0o700 });
   return file;
 }
