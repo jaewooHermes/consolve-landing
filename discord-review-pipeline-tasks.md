@@ -7,4 +7,4 @@
 - [x] Persist review job for Admin queue.
 - [x] Run a real sample generation and verify review-only visibility.
 - [x] Build, local HTTP, and publish-transition checks pass.
-- [ ] Commit, deploy, and verify external URLs.
+- [x] Commit, deploy, and verify external URLs.
