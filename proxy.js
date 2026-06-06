@@ -4,7 +4,11 @@ export function proxy(request) {
   const host = request.headers.get("host") || "";
   const pathname = request.nextUrl.pathname;
 
-  if (host.split(":")[0] === "admin.consolve.kr" && !pathname.startsWith("/admin")) {
+  if (
+    host.split(":")[0] === "admin.consolve.kr" &&
+    !pathname.startsWith("/admin") &&
+    !pathname.startsWith("/api")
+  ) {
     const url = request.nextUrl.clone();
     url.pathname = `/admin${pathname === "/" ? "" : pathname}`;
     return NextResponse.rewrite(url);
