@@ -3,8 +3,8 @@ import { listAllPosts, summarizePosts, formatDate, isPublicPost } from "../../li
 import { listPipelineJobs } from "../../lib/content-pipeline";
 
 export const metadata = {
-  title: "Consolve Admin — Blog Command Center",
-  description: "Consolve 블로그 발행 상태와 관리 명령어 안내",
+  title: "Consolve Admin — Review & Publish",
+  description: "Discord에서 생성된 Consovle 블로그 콘텐츠의 검토, 수정, 발행, 삭제 관리",
   robots: {
     index: false,
     follow: false,
@@ -14,19 +14,14 @@ export const metadata = {
 
 const commands = [
   {
-    label: "콘텐츠 파이프라인 실행",
-    command: "npm run admin:pipeline -- --keyword \"카페24 쇼핑몰 SEO 자동화\"",
-    note: "키워드 → 브리프 → 게이트 → CMS draft 패키지까지 생성합니다.",
-  },
-  {
     label: "발행 글 확인",
     command: "npm run admin:posts -- --status published",
     note: "published 상태와 publishedAt이 있는 글만 /blog, sitemap, RSS에 노출됩니다.",
   },
   {
-    label: "초안 확인",
+    label: "검토 초안 확인",
     command: "npm run admin:posts -- --status draft",
-    note: "draft 상태 글은 공개 블로그에는 노출하지 않습니다.",
+    note: "Discord로 생성된 draft/review 글을 검토합니다. admin에서 새 키워드 생성은 하지 않습니다.",
   },
   {
     label: "발행 승인",
@@ -40,6 +35,12 @@ const commands = [
   },
 ];
 
+function statusLabel(post) {
+  if (isPublicPost(post)) return "public";
+  if (post.status === "deleted") return "deleted";
+  return "review";
+}
+
 export default function AdminPage() {
   const posts = listAllPosts();
   const summary = summarizePosts();
@@ -48,10 +49,10 @@ export default function AdminPage() {
   return (
     <main className="admin-shell">
       <header className="admin-hero">
-        <p className="blog-kicker">Blog Command Center</p>
-        <h1>Consolve 블로그 관리</h1>
+        <p className="blog-kicker">Review · Edit · Publish · Delete</p>
+        <h1>Consolve 콘텐츠 검토 관리자</h1>
         <p>
-          이 화면은 `admin.consolve.kr` 또는 `consolve.kr/admin`에서 접근하는 블로그 관리 cmd 툴 라우트입니다. 공개 노출은 항상 CMS의 published 상태를 기준으로 필터링합니다.
+          이 화면은 Discord/Hermes로 생성된 콘텐츠를 검토, 수정, 발행, 삭제하는 전용 관리 화면입니다. 키워드 입력으로 새 콘텐츠를 생성하는 기능은 admin에서 제거했습니다.
         </p>
         <div className="admin-actions">
           <Link href="/blog">공개 블로그 보기</Link>
@@ -70,7 +71,7 @@ export default function AdminPage() {
           <strong>{summary.public}</strong>
         </article>
         <article>
-          <span>Hidden</span>
+          <span>Review/Hidden</span>
           <strong>{summary.hidden}</strong>
         </article>
       </section>
@@ -84,33 +85,11 @@ export default function AdminPage() {
         </div>
       </section>
 
-      <section className="admin-panel" aria-label="콘텐츠 파이프라인 실행">
-        <h2>콘텐츠 파이프라인 실행</h2>
+      <section className="admin-panel" aria-label="Discord 생성 작업">
+        <h2>Discord 생성 콘텐츠 큐</h2>
         <p className="admin-muted">
-          기존 콘텐츠 자동화 흐름을 admin에 연결했습니다. 키워드를 넣으면 Google 우선 브리프, AI 답변 보강, 네이버 발견성 체크를 거쳐 CMS draft 패키지를 만듭니다.
+          콘텐츠 생성은 Discord/Hermes 명령에서만 수행합니다. Admin은 생성된 draft를 검토하고 수정한 뒤 published/deleted 상태만 관리합니다.
         </p>
-        <form className="admin-pipeline-form" action="/api/admin/content-pipeline" method="post">
-          <label>
-            <span>키워드 / 주제</span>
-            <input name="keyword" placeholder="예: 카페24 쇼핑몰 SEO 자동화" required />
-          </label>
-          <label>
-            <span>프로젝트</span>
-            <input name="projectName" defaultValue="consolve" />
-          </label>
-          <label className="admin-checkbox">
-            <input type="checkbox" name="publish" value="true" />
-            <span>바로 published로 생성</span>
-          </label>
-          <button type="submit">파이프라인 실행</button>
-        </form>
-        <p className="admin-muted">
-          기본값은 안전하게 draft입니다. public blog 노출은 여전히 published + publishedAt 조건을 통과해야 합니다.
-        </p>
-      </section>
-
-      <section className="admin-panel" aria-label="최근 파이프라인 작업">
-        <h2>최근 파이프라인 작업</h2>
         {pipelineJobs.length ? (
           <div className="admin-post-list">
             {pipelineJobs.map((job) => (
@@ -127,8 +106,65 @@ export default function AdminPage() {
             ))}
           </div>
         ) : (
-          <p className="admin-muted">아직 admin에서 실행한 파이프라인 작업이 없습니다.</p>
+          <p className="admin-muted">아직 Discord에서 생성된 작업 기록이 없습니다.</p>
         )}
+      </section>
+
+      <section className="admin-panel" aria-label="CMS 글 검토">
+        <h2>콘텐츠 검토 / 수정 / 발행 / 삭제</h2>
+        <div className="admin-review-list">
+          {posts.map((post) => {
+            const publicPost = isPublicPost(post);
+            return (
+              <article key={post.id || post.slug} className="admin-review-card">
+                <div className="admin-review-head">
+                  <div>
+                    <strong>{post.title}</strong>
+                    <span>{post.slug}</span>
+                  </div>
+                  <div className="admin-post-meta">
+                    <span className={publicPost ? "is-public" : "is-hidden"}>{statusLabel(post)}</span>
+                    <span>{post.status}</span>
+                    <span>{formatDate(post.publishedAt || post.updatedAt)}</span>
+                  </div>
+                </div>
+
+                <form className="admin-edit-form" action="/api/admin/posts" method="post">
+                  <input type="hidden" name="slug" value={post.slug} />
+                  <input type="hidden" name="action" value="update" />
+                  <label>
+                    <span>Title</span>
+                    <input name="title" defaultValue={post.title || ""} />
+                  </label>
+                  <label>
+                    <span>Excerpt</span>
+                    <textarea name="excerpt" rows={2} defaultValue={post.excerpt || ""} />
+                  </label>
+                  <label>
+                    <span>Content Markdown</span>
+                    <textarea name="contentMarkdown" rows={8} defaultValue={post.contentMarkdown || ""} />
+                  </label>
+                  <div className="admin-form-actions">
+                    <button type="submit">수정 저장</button>
+                  </div>
+                </form>
+
+                <div className="admin-inline-actions">
+                  <form action="/api/admin/posts" method="post">
+                    <input type="hidden" name="slug" value={post.slug} />
+                    <input type="hidden" name="action" value="publish" />
+                    <button type="submit">발행</button>
+                  </form>
+                  <form action="/api/admin/posts" method="post">
+                    <input type="hidden" name="slug" value={post.slug} />
+                    <input type="hidden" name="action" value="delete" />
+                    <button className="danger" type="submit">삭제</button>
+                  </form>
+                </div>
+              </article>
+            );
+          })}
+        </div>
       </section>
 
       <section className="admin-panel" aria-label="관리 명령어">
@@ -141,28 +177,6 @@ export default function AdminPage() {
               <p>{item.note}</p>
             </article>
           ))}
-        </div>
-      </section>
-
-      <section className="admin-panel" aria-label="CMS 글 목록">
-        <h2>CMS posts</h2>
-        <div className="admin-post-list">
-          {posts.map((post) => {
-            const publicPost = isPublicPost(post);
-            return (
-              <article key={post.id || post.slug}>
-                <div>
-                  <strong>{post.title}</strong>
-                  <span>{post.slug}</span>
-                </div>
-                <div className="admin-post-meta">
-                  <span className={publicPost ? "is-public" : "is-hidden"}>{publicPost ? "public" : "hidden"}</span>
-                  <span>{post.status}</span>
-                  <span>{formatDate(post.publishedAt || post.updatedAt)}</span>
-                </div>
-              </article>
-            );
-          })}
         </div>
       </section>
     </main>

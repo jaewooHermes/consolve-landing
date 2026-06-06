@@ -1245,7 +1245,9 @@ button {
 
 .admin-status-list,
 .admin-command-list,
-.admin-post-list {
+.admin-post-list,
+.admin-review-list,
+.admin-edit-form {
   display: grid;
   gap: var(--space-3);
 }
@@ -1305,7 +1307,8 @@ button {
 
 .admin-status-list span,
 .admin-command-list article,
-.admin-post-list article {
+.admin-post-list article,
+.admin-review-card {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.04);
@@ -1313,7 +1316,9 @@ button {
 }
 
 .admin-command-list article,
-.admin-post-list article {
+.admin-post-list article,
+.admin-review-card,
+.admin-review-head {
   display: grid;
   gap: var(--space-3);
 }
@@ -1328,9 +1333,55 @@ button {
   font-size: var(--text-sm);
 }
 
-.admin-post-list article {
+.admin-post-list article,
+.admin-review-head {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
+}
+
+.admin-edit-form label {
+  display: grid;
+  gap: var(--space-2);
+  color: var(--muted-strong);
+  font-size: var(--text-sm);
+  font-weight: 900;
+}
+
+.admin-edit-form input,
+.admin-edit-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.24);
+  padding: var(--space-3);
+  color: #fff;
+  font: inherit;
+}
+
+.admin-form-actions,
+.admin-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.admin-form-actions button,
+.admin-inline-actions button {
+  border: 0;
+  border-radius: 999px;
+  background: #f8f8f4;
+  padding: var(--space-3) var(--space-5);
+  color: #111;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.admin-inline-actions .danger {
+  background: #30160f;
+  color: #ffb9a2;
+  border: 1px solid rgba(255, 91, 40, 0.35);
 }
 
 .admin-post-list strong,
@@ -1364,6 +1415,7 @@ button {
 @media (max-width: 720px) {
   .admin-grid,
   .admin-post-list article,
+  .admin-review-head,
   .admin-pipeline-form {
     grid-template-columns: 1fr;
   }
