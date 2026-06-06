@@ -1,0 +1,36 @@
+[
+  {
+    "id": "post_consolve_google_seo_pipeline",
+    "status": "published",
+    "title": "쇼핑몰 오가닉 트래픽을 늘리는 Google SEO 자동화 흐름",
+    "slug": "google-seo-automation-for-shopping-malls",
+    "excerpt": "쇼핑몰 운영자가 Google 노출을 늘리기 위해 콘텐츠 발행, 사이트맵, 구조화 데이터, 성과 모니터링을 어떤 순서로 연결해야 하는지 정리합니다.",
+    "metaTitle": "쇼핑몰 Google SEO 자동화 흐름 | Consovle",
+    "metaDescription": "쇼핑몰 오가닉 트래픽 증가를 위한 Google 우선 SEO 자동화 흐름: 콘텐츠 발행, 사이트맵, 구조화 데이터, 성과 모니터링까지 정리합니다.",
+    "targetKeyword": "쇼핑몰 SEO 자동화",
+    "publishedAt": "2026-06-06T00:00:00.000Z",
+    "updatedAt": "2026-06-06T00:00:00.000Z",
+    "author": "Consolve",
+    "contentMarkdown": "## 핵심 답변\n\n쇼핑몰 오가닉 트래픽을 늘리려면 먼저 Google에서 색인되고 노출될 수 있는 콘텐츠 구조를 만들어야 합니다. 그 다음 AI 검색이 인용하기 쉬운 답변 구조를 보강하고, 마지막으로 네이버 발견성을 RSS와 국내 검색 표현으로 보완합니다.\n\n## Google 노출을 먼저 보는 이유\n\nGoogle은 사이트맵, canonical, 구조화 데이터, 내부링크, 검색 의도 일치 같은 기술 SEO 기준을 비교적 명확하게 확인할 수 있습니다. 그래서 콘텐츠 자동화의 첫 기준을 Google로 잡으면 발행 품질을 관리하기 쉽습니다.\n\n## 자동화에 포함해야 할 단계\n\n- 콘텐츠 브리프 생성\n- CMS 초안 저장\n- 발행 승인\n- 블로그 공개\n- 사이트맵 갱신\n- Google Search Console 확인\n- GA4 성과 측정\n\n## CMS 발행 기준\n\nCMS에서 `published` 상태가 된 글만 공개 블로그에 보여야 합니다. draft, deleted, archived 상태는 목록과 상세 페이지 모두에서 제외해야 합니다."
+  },
+  {
+    "id": "post_hidden_draft_example",
+    "status": "draft",
+    "title": "초안 예시: 공개되면 안 되는 글",
+    "slug": "hidden-draft-example",
+    "excerpt": "이 글은 draft 상태라 /blog에 노출되면 안 됩니다.",
+    "publishedAt": null,
+    "updatedAt": "2026-06-06T00:00:00.000Z",
+    "contentMarkdown": "## 비공개\n\n이 글은 CMS 승인 전 초안입니다."
+  },
+  {
+    "id": "post_deleted_example",
+    "status": "deleted",
+    "title": "삭제된 글 예시",
+    "slug": "deleted-post-example",
+    "excerpt": "이 글은 deleted 상태라 /blog에 노출되면 안 됩니다.",
+    "publishedAt": "2026-06-01T00:00:00.000Z",
+    "updatedAt": "2026-06-06T00:00:00.000Z",
+    "contentMarkdown": "## 삭제됨\n\n이 글은 삭제 처리되었습니다."
+  }
+]

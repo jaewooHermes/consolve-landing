@@ -88,14 +88,14 @@ export default function Home() {
     <main className="site-shell">
       <section className="hero-gradient">
         <header className="topbar">
-          <a className="brand-link" href="#" aria-label="Consolve home">
+          <a className="brand-link" href="/" aria-label="Consolve home">
             <BrandMark />
             Consolve
           </a>
           <nav className="nav-links" aria-label="주요 메뉴">
             <a href="#services">Services</a>
             <a href="#work">Work</a>
-            <a href="#numbers">Numbers</a>
+            <a href="/blog">Blog</a>
             <a href="#pricing">Pricing</a>
           </nav>
           <div className="nav-actions">
