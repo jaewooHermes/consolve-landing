@@ -9,7 +9,7 @@
     "admin:posts": "node scripts/admin-posts.js list",
     "admin:publish": "node scripts/admin-posts.js publish",
     "admin:delete": "node scripts/admin-posts.js delete",
-    "admin:pipeline": "NODE_NO_WARNINGS=1 node scripts/admin-pipeline.js"
+    "content:review": "NODE_NO_WARNINGS=1 node scripts/discord-review-content.js"
   },
   "dependencies": {
     "next": "^16.2.6",

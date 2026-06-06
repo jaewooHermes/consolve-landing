@@ -1,1 +1,25 @@
-[]
+[
+  {
+    "id": "manual_ingest_24-5282f089",
+    "keyword": "카페24 쇼핑몰 검색엔진 등록 자동화",
+    "projectName": "consolve",
+    "source": "discord-blog-seo-automation",
+    "status": "ready_for_review",
+    "postSlug": "24-5282f089",
+    "postStatus": "review",
+    "sourcePostId": "post_584d65cdf0c5",
+    "createdAt": "2026-06-06T08:13:09.593Z",
+    "updatedAt": "2026-06-06T08:13:09.596Z",
+    "draftMarkdownPath": "drafts/consolve/24-5282f089.md",
+    "wikiUpdate": {
+      "ok": false,
+      "skipped": true,
+      "reason": "manual existing-content ingest"
+    },
+    "deployUpdate": {
+      "ok": false,
+      "skipped": true,
+      "reason": "manual existing-content ingest"
+    }
+  }
+]
