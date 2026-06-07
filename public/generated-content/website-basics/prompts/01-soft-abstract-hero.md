@@ -1,51 +1,49 @@
 ---
 illustration_id: 01-soft-abstract-hero
-type: soft-abstract-scene
-kind: hero
-style: soft-abstract-natural-editorial
-palette: desaturated-off-white-warm-gray-sage
+type: soft-editorial-thumbnail
+kind: hero-thumbnail
+style: soft-warm-vector-illustration
+palette: warm-ivory-sage-taupe
 aspect: 16:9
-image_purpose_goal: 웹사이트의 기본이 단순한 화면 제작이 아니라 목적, 구조, 콘텐츠, 디자인, 신뢰, 운영이 하나의 기반으로 맞물리는 일임을 전달한다
-image_purpose_takeaway: 좋은 웹사이트는 여러 요소가 튀지 않고 조용히 정렬되어 사용자가 신뢰할 수 있는 경험을 만든다는 느낌
-image_purpose_fit: 본문 흐름인 목적 설정 → 구조 설계 → 콘텐츠 정리 → 디자인 일관성 → 신뢰 형성 → 운영 개선을 하나의 부드러운 중심 기반과 주변 레이어로 연결한다
+reference_policy: none
+image_purpose_goal: 웹사이트의 기본은 예쁜 화면보다 목적, 정보 구조, 콘텐츠, 신뢰, 운영 흐름을 먼저 설계하는 일임을 한눈에 이해시킨다
+image_purpose_takeaway: 좋은 웹사이트는 고객 질문을 따라 정리된 길이며, 각 요소가 하나의 사용 경험으로 연결된다는 느낌
+image_purpose_fit: 본문 흐름인 목적 설정, 정보 구조, 콘텐츠, 디자인, 신뢰, 운영 개선을 부드러운 일러스트 썸네일로 쉽게 요약한다
 output: 01-soft-abstract-hero.png
 ---
 
-Create one soft, natural, abstract 16:9 hero image for a Korean business blog article.
+Create one soft 16:9 editorial thumbnail illustration for a Korean business blog article.
+
+IMPORTANT
+Do not follow or reconstruct any reference image. There is no reference-style requirement. Generate the image only from the article topic and the image purpose below.
 
 ARTICLE
 Title: 웹사이트의 기본: 목적에서 운영까지 이어지는 설계 원칙
 Keyword: 웹사이트의 기본
-Article direction: purpose, structure, content, design, trust, and operation are connected into one calm website foundation.
+Audience: Korean small business owners, custom mall owners, and service operators who need to understand website planning basics before production.
 
 IMAGE PURPOSE
-Goal: 웹사이트의 기본이 단순한 화면 제작이 아니라 목적, 구조, 콘텐츠, 디자인, 신뢰, 운영이 하나의 기반으로 맞물리는 일임을 전달한다.
-Reader takeaway: 좋은 웹사이트는 여러 요소가 튀지 않고 조용히 정렬되어 사용자가 신뢰할 수 있는 경험을 만든다는 느낌.
-Content fit: 본문 흐름인 목적 설정 → 구조 설계 → 콘텐츠 정리 → 디자인 일관성 → 신뢰 형성 → 운영 개선을 하나의 부드러운 중심 기반과 주변 레이어로 연결한다.
-Visual metaphor: one large calm foundation layer in the center, with several soft rounded paper/fabric layers gently tucked around it, suggesting supporting website basics without becoming a diagram.
-
-Use this purpose as the primary creative brief. The image should first communicate the purpose above, then match the reference mood. Do not make a decorative generic abstract image.
-
-REFERENCE STYLE TO RECONSTRUCT
-Quiet overhead editorial/product photograph; soft rectangular objects with rounded corners; fabric-like or paper-like matte surfaces; gently overlapping around one larger central form; desaturated off-white and warm gray; subtle muted sage/khaki accent; diffused natural light; soft shadows; low contrast; calm premium catalog feeling; lots of breathing room.
+Goal: 웹사이트의 기본은 예쁜 화면보다 목적, 정보 구조, 콘텐츠, 신뢰, 운영 흐름을 먼저 설계하는 일임을 한눈에 이해시킨다.
+Reader takeaway: 좋은 웹사이트는 고객 질문을 따라 정리된 길이며, 각 요소가 하나의 사용 경험으로 연결된다는 느낌.
+Content fit: 본문 흐름인 목적 설정, 정보 구조, 콘텐츠, 디자인, 신뢰, 운영 개선을 부드러운 일러스트 썸네일로 쉽게 요약한다.
 
 VISUAL CONCEPT
-Express the article's idea without showing a diagram: a website's basics as a calm, tactile foundation made from layered soft panels/pages/fabric blocks. The central soft rectangle is the stable website foundation. Surrounding partial rounded forms are not labeled, but they quietly imply purpose, structure, content, design, trust, and operation. It must feel organic and natural, not instructional.
+A friendly soft illustration thumbnail: a clean website page card sits in the center, supported by gentle foundation blocks. Around it are small simple icons that imply the article's core ideas: a target for purpose, connected blocks for information structure, a document card for content, a shield/check for trust, and a soft circular arrow for operation/improvement. These elements should feel like parts of one calm website planning system, not a hard process diagram.
 
 COMPOSITION
-Wide 16:9 horizontal image, overhead or slightly angled top view, one large central rounded rectangular form, several cropped surrounding forms near the edges, gentle asymmetry, spacious margins, no hard perspective, no busy details.
+Wide 16:9. Center-focused. One large rounded browser/page card in the middle. Five small supporting icon cards arranged around the central page in a loose friendly arc. Use spacious margins and simple shapes so it reads clearly as a thumbnail.
 
 STYLE
-Soft abstract natural editorial image, premium minimal product-photography mood, tactile matte surfaces, gentle fabric/paper texture, smooth rounded edges, subdued Korean editorial tone.
+Soft warm vector illustration, editorial blog thumbnail, rounded shapes, subtle shadows, tactile paper-like warmth, clean Korean business tone, calm and approachable, not overly cute.
 
 COLORS
-Warm off-white, light gray, ivory, soft beige, muted sage/khaki accent only if needed. Avoid saturated colors.
+Warm ivory background, soft beige and taupe surfaces, muted sage accent, dark warm gray line details. Low contrast but clear enough to understand at thumbnail size.
 
 TEXT RULE
-No text inside the image. No title, no labels, no UI words, no logos. The blog renderer may place text separately.
+No title text, no paragraphs, no fake UI text. If any micro-lines appear on the website card, they must be abstract lines only, not readable words.
 
 AVOID
-robots, AI brain, neon, glossy 3D, blue-purple gradient, stock photo look, fake dense text, flowchart, diagram, step-by-step layout, UI wireframe, screenshots, text overlays, logos, charts, arrows, numbered steps, people, laptops, dashboards, browser windows, literal website screens, generic office scenes.
+Do not use reference-image reconstruction. Avoid robots, AI brain, neon, glossy 3D, blue-purple gradient, stock-photo office scene, people, laptops, screenshots, real browser UI, dense text, hard flowchart, numbered steps, arrows, corporate cliché, excessive decoration.
 
 ASPECT
 16:9
