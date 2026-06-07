@@ -11,6 +11,13 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function safeImageSrc(value) {
+  const src = String(value || "").trim();
+  if (/^\/generated-content\/[a-z0-9._\/-]+\.(?:png|jpg|jpeg|webp|gif)$/i.test(src)) return src;
+  if (/^https:\/\/[^\s)]+\.(?:png|jpg|jpeg|webp|gif)$/i.test(src)) return src;
+  return "";
+}
+
 function inlineMarkdown(value) {
   let html = escapeHtml(value);
   html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" rel="nofollow noopener noreferrer" target="_blank">$1</a>');
@@ -34,6 +41,15 @@ function markdownToHtml(markdown) {
     const trimmed = line.trim();
     if (!trimmed) {
       flushList();
+      continue;
+    }
+    const imageMatch = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+    if (imageMatch) {
+      flushList();
+      const src = safeImageSrc(imageMatch[2]);
+      if (src) {
+        blocks.push(`<figure class="article-image"><img src="${escapeHtml(src)}" alt="${escapeHtml(imageMatch[1])}" loading="lazy" decoding="async" /></figure>`);
+      }
       continue;
     }
     if (trimmed.startsWith("### ")) {

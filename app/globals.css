@@ -1424,3 +1424,16 @@ button {
     justify-content: flex-start;
   }
 }
+.article-image {
+  margin: clamp(28px, 5vw, 48px) 0;
+}
+
+.article-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
