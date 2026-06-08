@@ -29,7 +29,7 @@ export default async function AdminPage() {
         <p className="blog-kicker">Routing Status · Read Only</p>
         <h1>Consolve 콘텐츠 라우팅 상태</h1>
         <p>
-          콘텐츠 생성, 검토, 수정, 발행, 삭제 기능은 Consovle 사이트에서 제거했습니다. 새 콘텐츠는 seo-blog CRM이 shared DB에 published 상태로 저장하고, /blog는 DB의 공개 콘텐츠를 바로 읽습니다.
+          콘텐츠 생성, 검토, 수정, 발행, 삭제 기능은 Consolve 사이트에서 제거했습니다. 새 콘텐츠는 seo-blog CRM이 shared DB에 published 상태로 저장하고, /blog는 DB의 공개 콘텐츠를 바로 읽습니다.
         </p>
         <div className="admin-actions">
           <Link href="/blog">공개 블로그 보기</Link>

@@ -18,7 +18,7 @@ export default async function BlogPage() {
     <main className="blog-shell">
       <header className="blog-hero">
         <Link className="blog-eyebrow" href="/">
-          Consovle
+          Consolve
         </Link>
         <p className="blog-kicker">Google 노출 → AI 답변 → 네이버 보완</p>
         <h1>쇼핑몰과 웹사이트 운영자를 위한 오가닉 성장 노트</h1>

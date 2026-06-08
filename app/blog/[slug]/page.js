@@ -84,7 +84,7 @@ export async function generateMetadata({ params }) {
   const post = await getPublicPostBySlug(slug);
   if (!post) {
     return {
-      title: "글을 찾을 수 없습니다 | Consovle Blog",
+      title: "글을 찾을 수 없습니다 | Consolve Blog",
       robots: { index: false, follow: false },
     };
   }
