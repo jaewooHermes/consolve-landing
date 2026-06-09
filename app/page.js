@@ -1,257 +1,437 @@
-import styles from "./page.module.css";
+"use client";
 
-export const metadata = {
-  title: "Visible Dev — 출시해도 부끄럽지 않은 웹사이트",
-  description: "랜딩페이지, 회사 홈페이지, cafe24 자사몰까지 완성도 있게 만드는 개발 외주.",
-};
+// 메인 (/) — index.html 복사본 + channel.io 디자인 시스템
+// 원본: ../index.html (Visible Dev 보라 톤) / channel.io 토큰 적용 변형본
+// metadata는 ./layout.js 에 있음 (이 파일은 사례 캐러셀 때문에 client component)
+//
+// ▸ 디자인 조절은 아래 :root 토큰 블록만 수정하면 전체에 반영됩니다.
+//   - 간격: --space-* (4px 리듬) / --section-y* (섹션 상하) / --hero-y
+//   - 영역: --max(페이지) / --max-feature / --max-copy / --gutter
+//   - 폰트: --text-* (크기) / --fw-* (굵기) / --lh-* (행간) / --ls-* (자간)
+//   - 라운드: --r-* / 색: --ink, --purple, --green ...
 
-export default function ChannelPage() {
-  return (
-    <div className={styles.page}>
-      <nav className="nav">
-        <div className="wrap nav-inner">
-          <a className="brand" href="#">
-            <span className="mark">✓</span> Visible Dev
-          </a>
-          <div className="links">
-            <a>서비스 <span>⌄</span></a>
-            <a>작업방식 <span>⌄</span></a>
-            <a>사례</a>
-            <a>자료 <span>⌄</span></a>
-          </div>
-          <div className="nav-actions">
-            <a>로그인</a>
-            <a className="pill-dark" href="#contact">프로젝트 상담하기</a>
+import { useEffect, useRef } from "react";
+
+const css = `
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  /* ── Color ── */
+  --ink:#0a0b0b;
+  --muted:#666a73;
+  --soft:#8d8e91;
+  --line:#ececf0;
+  --surface:#f7f7f8;
+  --paper:#fff;
+  --purple:#5e56f0;
+  --purple-dark:#4d46d6;
+  --blue:#80c7ff;
+  --mint:#b9ead6;
+  --pink:#efb6ff;
+  --green:#31a552;
+
+  /* ── Spacing (4px 리듬) ── */
+  --space-1:4px;  --space-2:8px;   --space-3:12px;  --space-4:16px;
+  --space-5:20px; --space-6:24px;  --space-7:28px;  --space-8:32px;
+  --space-10:40px;--space-12:48px; --space-14:56px; --space-16:64px;
+  --space-18:72px;--space-20:80px; --space-24:96px;
+
+  /* ── 섹션 리듬 ── */
+  --section-y:88px;      /* 일반 섹션 상하 패딩 */
+  --section-y-lg:112px;  /* feature / omni 상하 패딩 */
+  --hero-y:72px;         /* hero 상단 패딩 */
+
+  /* ── 영역 폭 ── */
+  --max:1280px;          /* 페이지 폭 (channel.io: 3-col 그리드 ≈1224 + gutter 28*2) */
+  --max-feature:980px;   /* feature 폭 */
+  --max-copy:690px;      /* 본문 카피 폭 */
+  --hero-w:560px;        /* hero 좌측 텍스트·인풋 공통 너비 */
+  --gutter:28px;         /* 좌우 여백 */
+
+  /* ── Typography 스케일 ── */
+  --text-xs:12px; --text-sm:13px; --text-md:14px;  --text-base:15px;
+  --text-lg:16px; --text-xl:18px; --text-2xl:24px; --text-3xl:40px;
+  --text-4xl:36px;--text-5xl:40px;--text-6xl:56px;
+
+  /* ── 굵기 ── */
+  --fw-medium:500; --fw-semibold:600; --fw-bold:700; --fw-black:800;
+
+  /* ── 행간 ── */
+  --lh-tight:1.25; --lh-snug:1.3; --lh-body:1.55; --lh-relaxed:1.8;
+
+  /* ── 자간 ── */
+  --ls-tight:-.04em; --ls-snug:-.03em; --ls-normal:-.02em; --ls-display:-.06em;
+
+  /* ── 라운드 (channel.io) ── */
+  --r-sm:8px; --r-md:12px; --r-lg:14px; --r-pill:999px;
+
+  /* ── 그림자 ── */
+  --shadow:0 12px 40px rgba(0,0,0,.08);
+  --shadow-sm:0 9px 28px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Pretendard","Inter","Noto Sans KR",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff;letter-spacing:var(--ls-normal);line-height:var(--lh-body)}
+a{text-decoration:none;color:inherit}
+button,input{font:inherit}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+
+.nav{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.84);backdrop-filter:blur(18px);border-bottom:1px solid rgba(17,17,20,.04)}
+.nav-inner{height:68px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:9px;font-weight:var(--fw-bold);letter-spacing:var(--ls-snug)}
+.logo-img{height:30px;width:auto;display:block;flex:none}
+.links{display:flex;align-items:center;gap:var(--space-8);color:#333740;font-size:var(--text-md);font-weight:var(--fw-semibold)}
+.links span{color:#b3b3ba;margin-left:4px}
+.nav-actions{display:flex;align-items:center;gap:var(--space-4);font-size:var(--text-md);font-weight:var(--fw-semibold)}
+.pill-dark{background:#111114;color:#fff;border-radius:var(--r-pill);padding:11px 18px;font-weight:var(--fw-bold);box-shadow:0 8px 18px rgba(0,0,0,.12)}
+
+.hero{padding:var(--hero-y) 0 var(--space-16)}
+.hero-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:var(--space-20);align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);color:#6f7580;margin-bottom:var(--space-5);font-weight:var(--fw-semibold)}
+.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--purple);box-shadow:0 0 0 6px rgba(94,86,240,.08)}
+h1{font-size:var(--text-5xl);line-height:1.4;margin:0 0 var(--space-6);font-weight:var(--fw-semibold);letter-spacing:var(--ls-normal);max-width:var(--hero-w)}
+.hero-copy{color:#565b66;font-size:var(--text-lg);margin:0 0 var(--space-10);max-width:var(--hero-w);line-height:var(--lh-relaxed)}
+.search-cta{width:min(var(--hero-w),100%);height:62px;border:1px solid #e2e2e8;border-radius:var(--r-pill);display:flex;align-items:center;padding:6px 8px 6px 28px;background:#fff;box-shadow:0 10px 34px rgba(20,18,40,.06)}
+.search-cta input{border:0;outline:none;flex:1;color:#2d3035;font-size:var(--text-md);letter-spacing:var(--ls-normal)}
+.search-cta input::placeholder{color:#a9acb3}
+.go{border:0;width:48px;height:48px;border-radius:50%;background:#d8d9dd;color:#fff;display:grid;place-items:center;font-size:var(--text-lg);font-weight:var(--fw-black);cursor:pointer;transition:.2s}
+.go:hover{background:var(--purple);transform:translateX(2px)}
+.chips{display:flex;gap:7px;align-items:center;margin-top:var(--space-5);color:#a0a4ac;font-size:var(--text-xs);flex-wrap:wrap}
+.chip{padding:4px 9px;border-radius:var(--r-pill);background:#f2f2f4;color:#7b808a;font-weight:var(--fw-bold)}
+
+.hero-visual{position:relative;min-height:640px;border-radius:24px;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:32px 32px 0;background:linear-gradient(135deg,#cfe0ff 0%,#ecd8ff 32%,#ffd7ea 58%,#dfe5ff 100%);box-shadow:var(--shadow)}
+.hero-visual::before{content:"";position:absolute;inset:0;background:radial-gradient(55% 45% at 22% 12%,rgba(140,175,255,.85),transparent 62%),radial-gradient(45% 40% at 82% 26%,rgba(255,150,205,.7),transparent 62%),radial-gradient(70% 55% at 55% 95%,rgba(170,150,255,.6),transparent 60%)}
+.browser-pill{position:relative;z-index:2;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.75);backdrop-filter:blur(8px);border-radius:var(--r-pill);padding:12px 22px;font-size:var(--text-sm);font-weight:var(--fw-semibold);color:#3a3550;box-shadow:0 6px 18px rgba(60,40,90,.08);margin-bottom:22px}
+.demo-phone{position:relative;z-index:2;width:62%;max-width:380px;flex:1;background:#fff;border:7px solid #15151c;border-bottom:0;border-radius:34px 34px 0 0;box-shadow:0 30px 60px rgba(30,20,60,.18);padding:24px 18px;display:flex;flex-direction:column;gap:16px}
+.chat-user{align-self:flex-end;max-width:80%;background:#f1f1f4;color:#2b2b30;border-radius:16px 16px 4px 16px;padding:11px 15px;font-size:var(--text-sm);line-height:1.5}
+.chat-ai{align-self:flex-start;max-width:90%}
+.ai-head{display:flex;align-items:center;gap:7px;font-size:var(--text-xs);font-weight:var(--fw-bold);color:#6b6f78;margin-bottom:7px}
+.ai-ava{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#7d78f5,#ff8fcf);display:grid;place-items:center;font-size:11px;color:#fff}
+.ai-msg{background:#f6f6f8;border-radius:4px 16px 16px 16px;padding:12px 15px;font-size:var(--text-sm);line-height:1.6;color:#33363d}
+
+.logos{padding:var(--space-8) 0 var(--space-20)}
+.logo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--space-10);align-items:center;opacity:.72}
+.logo{height:30px;display:flex;align-items:center;justify-content:center;color:#26272b;font-weight:var(--fw-black);font-size:var(--text-lg);filter:grayscale(1)}
+.logo.light{color:#b6b8bf}
+.logo-cta{justify-self:center;background:#111;color:#fff;border-radius:var(--r-pill);padding:11px 18px;font-size:var(--text-xs);font-weight:var(--fw-black)}
+
+.section{padding:var(--section-y) 0}
+.section.center{text-align:center}
+.kicker{font-size:var(--text-md);font-weight:var(--fw-bold);color:#6c7078;margin-bottom:var(--space-3)}
+h2{font-size:var(--text-3xl);line-height:1.4;margin:0 0 var(--space-4);font-weight:var(--fw-semibold);letter-spacing:var(--ls-normal);word-break:keep-all}
+.desc{font-size:var(--text-xl);color:#626873;line-height:var(--lh-body);margin:0 auto;max-width:var(--max-copy)}
+
+.quality-chart{margin:var(--space-16) auto 0}
+.quality-chart svg{width:100%;height:auto;display:block}
+
+/* 사례 — 탭 + 대형 인터뷰 카드 캐러셀 (channel.io 레퍼런스 레이아웃) */
+.case-tabs{display:flex;align-items:center;justify-content:center;gap:var(--space-4);margin-bottom:var(--space-8);flex-wrap:wrap}
+.case-tabs .tab-group{display:flex;align-items:center;gap:var(--space-1);background:#f1f1f3;border-radius:var(--r-pill);padding:5px}
+.case-tabs .tab-group a{padding:9px 18px;border-radius:var(--r-pill);font-size:var(--text-md);font-weight:var(--fw-semibold);color:#5a5e66;white-space:nowrap;cursor:pointer}
+.case-tabs .tab-group a.active{background:#fff;color:#111;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.case-tabs .tab-all{font-size:var(--text-md);font-weight:var(--fw-semibold);color:#8b9099;white-space:nowrap;cursor:pointer}
+.case-stage{position:relative}
+.case-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;border-radius:20px;scrollbar-width:none;-ms-overflow-style:none}
+.case-track::-webkit-scrollbar{display:none}
+.case-card{flex:0 0 100%;scroll-snap-align:center;position:relative;min-height:600px;border-radius:20px;overflow:hidden;color:#fff;display:flex;align-items:center;background-size:cover;background-position:center right}
+.case-card::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(28,24,22,.92) 0%,rgba(28,24,22,.72) 38%,rgba(28,24,22,.25) 68%,rgba(28,24,22,.05) 100%)}
+.case-1{background-image:linear-gradient(120deg,#2a2622,#4a4038 60%,#6b5d4f)}
+.case-2{background-image:linear-gradient(120deg,#1c2330,#28324a 60%,#3c4a68)}
+.case-3{background-image:linear-gradient(120deg,#241c2c,#352a44 60%,#4a3c5e)}
+.case-inner{position:relative;z-index:2;padding:var(--space-16) var(--space-14) var(--space-16) var(--space-24);max-width:600px}
+.case-brand{font-size:var(--text-2xl);font-weight:var(--fw-black);letter-spacing:.06em;margin-bottom:var(--space-8)}
+.case-stat{font-size:64px;line-height:1;font-weight:var(--fw-black);letter-spacing:var(--ls-display)}
+.case-stat small{font-size:.42em;font-weight:var(--fw-bold);margin-left:4px;vertical-align:8px}
+.case-stat-label{font-size:var(--text-lg);font-weight:var(--fw-semibold);margin:var(--space-3) 0 var(--space-7)}
+.case-quote{font-size:var(--text-lg);font-weight:var(--fw-bold);line-height:1.7;max-width:480px;margin:0}
+.case-quote em{display:block;margin-top:var(--space-2);font-style:normal;font-weight:var(--fw-medium);opacity:.55;font-size:var(--text-sm)}
+.case-author{margin-top:var(--space-5);font-size:var(--text-sm);color:rgba(255,255,255,.78)}
+.case-more{display:inline-block;margin-top:var(--space-8);font-size:var(--text-sm);font-weight:var(--fw-bold);cursor:pointer}
+.case-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.22);backdrop-filter:blur(6px);color:#fff;cursor:pointer;font-size:24px;line-height:1;display:grid;place-items:center}
+.case-nav.prev{left:18px}.case-nav.next{right:18px}
+@media(max-width:900px){.case-card{min-height:480px}.case-inner{padding:var(--space-12) var(--space-8)}.case-stat{font-size:48px}}
+
+.ai-city{margin:var(--space-14) auto 0;max-width:940px;height:430px;position:relative;background:linear-gradient(#fff,#fff)}
+.grid-floor{position:absolute;left:12%;right:12%;bottom:18px;height:300px;background-image:linear-gradient(30deg,rgba(94,86,240,.15) 1px,transparent 1px),linear-gradient(150deg,rgba(94,86,240,.12) 1px,transparent 1px);background-size:44px 44px;transform:skewY(-8deg);opacity:.65}
+.building{position:absolute;width:92px;height:112px;border:1px solid #dcdaf8;background:#fff;transform:skewY(-8deg);box-shadow:0 12px 22px rgba(94,86,240,.04)}
+.building::before{content:"";position:absolute;inset:14px;background:repeating-linear-gradient(90deg,transparent 0 11px,#dcdaf8 12px 14px),repeating-linear-gradient(0deg,transparent 0 17px,#dcdaf8 18px 20px);opacity:.5}
+.building.purple{background:#5e56f0;border-color:#5e56f0;left:47%;top:64px;height:150px;color:#fff;display:grid;place-items:center;font-weight:var(--fw-black);transform:skewY(-8deg)}
+.b1{left:16%;top:220px}.b2{left:31%;top:255px}.b3{right:22%;top:200px}.b4{right:36%;top:280px}.b5{left:55%;top:250px}.b6{left:42%;top:300px}
+
+.reason-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-10);margin-top:var(--space-16);text-align:left}
+.reason .ico{width:28px;height:28px;border-radius:var(--r-sm);border:1px solid #e8e8ee;display:grid;place-items:center;margin-bottom:var(--space-4);color:var(--purple);font-weight:var(--fw-black);background:#fff}.reason h3{font-size:var(--text-lg);margin:0 0 var(--space-2)}.reason p{font-size:var(--text-sm);color:#69707b;line-height:var(--lh-relaxed);margin:0}
+
+.feature{padding:var(--section-y-lg) 0}.feature-head{margin-bottom:var(--space-10)}.feature-head .kicker{text-align:left}.feature-head .desc{margin:0;max-width:720px}
+.feature-grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--space-6);align-items:stretch}.visual-card{border-radius:var(--r-lg);min-height:280px;position:relative;overflow:hidden;box-shadow:var(--shadow)}.visual-blue{background:linear-gradient(135deg,#9ed1ff,#6fa8ff)}.visual-pink{background:linear-gradient(135deg,#f0b4ff,#c4b9ff)}.visual-dark{background:radial-gradient(circle at 60% 15%,#8d7c9d,transparent 34%),linear-gradient(135deg,#140816,#2d1938 45%,#050307)}.visual-green{background:linear-gradient(135deg,#d9ebe6,#b8d4cd)}.visual-lavender{background:linear-gradient(135deg,#d7d6ff,#f2d5ff)}
+.panel-fake{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:66%;border-radius:var(--r-md);background:#fff;box-shadow:0 28px 70px rgba(27,36,61,.16);padding:var(--space-4)}.row{height:38px;border:1px solid #edf0f4;border-radius:var(--r-sm);margin:var(--space-2) 0;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:var(--text-xs);color:#343943}.switch{width:32px;height:18px;border-radius:99px;background:#31a552;position:relative}.switch::after{content:"";position:absolute;width:14px;height:14px;right:2px;top:2px;background:#fff;border-radius:50%}.chat-card{border-radius:var(--r-lg);background:#fafafa;border:1px solid #efeff2;min-height:280px;padding:var(--space-8) var(--space-6);display:flex;flex-direction:column;justify-content:center;gap:var(--space-3)}.chat-line{max-width:230px;background:#fff;border:1px solid #e5e5ea;border-radius:var(--r-pill);padding:12px 16px;font-size:var(--text-sm);color:#555b66}.chat-line.me{margin-left:auto;background:#111;color:#fff}.before-after{margin-top:var(--space-4);display:flex;gap:18px;justify-content:center;color:#a0a3aa;font-size:var(--text-xs);font-weight:var(--fw-black)}.before-after b{color:#111;background:#fff;padding:6px 12px;border-radius:var(--r-pill);box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.caption-grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--space-6);margin-top:var(--space-4)}.caption h3{font-size:var(--text-xl);margin:0 0 var(--space-2)}.caption p{font-size:var(--text-sm);line-height:var(--lh-relaxed);color:#59606b;margin:0}.caption b{color:#111}
+
+.omni{background:#f6f3ef;padding:var(--section-y-lg) 0;text-align:center}.app-shot{margin:var(--space-14) auto 0;max-width:760px;height:430px;border-radius:var(--r-lg);background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.1);border:1px solid #eee;display:grid;grid-template-columns:160px 1fr 170px;overflow:hidden;text-align:left}.side{background:#f6f6f8;border-right:1px solid #ececf0;padding:var(--space-5)}.side .dot{width:8px;height:8px;border-radius:50%;background:#ff5f57;box-shadow:16px 0 #ffbd2e,32px 0 #28c840;margin-bottom:var(--space-5)}.list-item{height:26px;border-radius:var(--r-sm);background:#e9e9ef;margin-bottom:var(--space-2)}.chat-main{padding:var(--space-6)}.msg{background:#f0eefb;border-radius:var(--r-lg);padding:12px 14px;margin:var(--space-3) 0;font-size:var(--text-sm)}.profile{padding:var(--space-6);background:#fbfbfc;border-left:1px solid #ececf0}.avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#ffd7c0,#b9ead6);margin-bottom:var(--space-4)}.channel-icons{display:flex;justify-content:center;gap:var(--space-6);margin-top:var(--space-8);color:#a4a4aa;font-weight:var(--fw-black);font-size:var(--text-xl)}
+
+.human-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4);margin-top:var(--space-14)}.human-card{min-height:250px;border-radius:var(--r-lg);background:#f4efe7;padding:var(--space-6);position:relative;overflow:hidden}.human-card:nth-child(2){background:#dfeede}.human-card:nth-child(3){background:#dfeeff}.mini-panel{background:rgba(255,255,255,.8);border-radius:var(--r-md);padding:var(--space-4);width:190px;box-shadow:0 12px 34px rgba(0,0,0,.07)}.phone-small{margin:8px auto 0;width:140px;height:210px;border:4px solid #15172a;border-radius:24px;background:#fff;padding:22px 14px}.tree{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:220px;height:120px}.tree .root{position:absolute;left:50%;top:0;transform:translateX(-50%);background:#1f2d50;color:#fff;border-radius:var(--r-pill);padding:12px 38px}.tree .node{position:absolute;bottom:0;border:1px solid #1f2d50;border-radius:var(--r-pill);padding:10px 18px;background:rgba(255,255,255,.55);font-size:var(--text-sm)}.n1{left:0}.n2{left:76px}.n3{right:0}.human-caption{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4);text-align:left;margin-top:var(--space-4)}.human-caption h3{margin:0 0 var(--space-2);font-size:var(--text-xl)}.human-caption p{margin:0;color:#626873;font-size:var(--text-sm);line-height:var(--lh-relaxed)}
+
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3);margin-top:var(--space-18)}.stat-card{background:#f6f4f1;border-radius:var(--r-lg);padding:var(--space-6);text-align:left}.stat-card b{font-size:var(--text-4xl);display:block;letter-spacing:var(--ls-display)}.stat-card span{font-size:var(--text-sm);color:#777b84}.platform{margin-top:var(--space-3);background:#f6f4f1;border-radius:var(--r-lg);display:grid;grid-template-columns:1fr 1.3fr;gap:var(--space-3);padding:var(--space-6);text-align:left}.platform-box{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2)}.platform-box div{background:#fff;border:1px solid #e7e4df;border-radius:var(--r-sm);padding:14px;text-align:center;font-weight:var(--fw-black);color:#555}
+
+.final-cta{padding:var(--section-y) 0;text-align:center}.final-cta h2{font-size:var(--text-3xl)}.footer{background:#fff;margin-top:0;border-top:1px solid #e8e8ec;padding:var(--space-16) 0 var(--space-24);color:#5f636d}.footer-grid{display:grid;grid-template-columns:1.5fr repeat(5,1fr);gap:var(--space-7)}.footer h4{font-size:var(--text-sm);color:#111;margin:0 0 var(--space-4)}.footer a{display:block;font-size:var(--text-sm);margin:9px 0;color:#737780}
+
+
+@media(max-width:900px){.links{display:none}.hero-grid,.feature-grid,.caption-grid,.human-grid,.human-caption,.stats-grid,.platform,.footer-grid{grid-template-columns:1fr}.hero{padding-top:var(--space-12)}.hero-grid{gap:var(--space-8)}h1{font-size:var(--text-4xl)}.hero-visual{min-height:460px}.logo-grid{grid-template-columns:repeat(2,1fr)}.reason-grid{grid-template-columns:1fr 1fr}.app-shot{grid-template-columns:1fr;height:auto}.profile{display:none}.side{display:none}.feature{padding:var(--space-20) 0}.section{padding:var(--space-18) 0}}
+`;
+
+const body = `
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#"><img class="logo-img" src="/logo.png" alt="System Web" /></a>
+      <div class="links"><a>서비스 <span>⌄</span></a><a>진행방식 <span>⌄</span></a><a>사례</a><a>자료 <span>⌄</span></a></div>
+      <div class="nav-actions"><a>로그인</a><a class="pill-dark" href="#contact">5분 견적 받기</a></div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <h1>시스템으로 만드는, 빠르고 퀄리티 있는 웹사이트·자사몰</h1>
+          <p class="hero-copy">각 단계의 기준을 시스템으로 고정해 속도와 완성도를 같이 끌어올립니다.</p>
+          <form class="search-cta" id="contact">
+            <input placeholder="만들고 싶은 웹사이트를 입력해주세요" />
+            <button class="go" aria-label="견적 받기">↑</button>
+          </form>
+          <div class="chips"><span>예시로 만들어보기</span><span class="chip">러닝 브랜드</span><span class="chip">시공사</span><span class="chip">플랫폼</span></div>
+        </div>
+        <div class="hero-visual" aria-label="제작 어시스턴트 데모 미리보기">
+          <div class="browser-pill">🌐 mybrand.com</div>
+          <div class="demo-phone">
+            <div class="chat-user">쇼핑몰(자사몰) 만들고 싶어요</div>
+            <div class="chat-ai">
+              <div class="ai-head"><span class="ai-ava">✦</span> 견적 어시스턴트</div>
+              <div class="ai-msg">안녕하세요! 만들 사이트나 브랜드를 알려 주시면 5분 안에 예상 견적과 일정을 잡아드릴게요.</div>
+            </div>
           </div>
         </div>
-      </nav>
+      </div>
+    </section>
 
-      <main>
-        <section className="hero">
-          <div className="wrap hero-grid">
-            <div>
-              <h1>빠르고 투명한 웹사이트 개발</h1>
-              <p className="hero-copy">바쁘시죠? 바로 견적을 봐드릴게요. 결과물은 자신있습니다.</p>
-              <form className="search-cta" id="contact">
-                <input placeholder="만들고 싶은 웹사이트나 자사몰을 적어주세요" />
-                <button className="go" aria-label="상담 시작">→</button>
-              </form>
-              <div className="chips">
-                <span className="chip">랜딩페이지</span>
-                <span className="chip">홈페이지</span>
-                <span className="chip">카페24</span>
-                <span className="chip">자동화</span>
-              </div>
-            </div>
-            <div className="hero-visual" aria-label="웹사이트 미리보기">
-              <div className="domain">visible.dev/work</div>
-              <div className="tiny-toast">반응형 · 폼 연결 · 배포 완료</div>
-              <div className="phone">
-                <div className="bubble">
-                  <strong>출시 체크</strong>
-                  모바일 화면, 문의 폼, 카카오톡 연결, 기본 SEO까지 확인했습니다. 운영자가 바로 쓸 수 있게 인계합니다.
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+    <section class="logos">
+      <div class="wrap logo-grid">
+        <div class="logo">cafe24</div><div class="logo">imweb</div><div class="logo">KakaoTalk</div><div class="logo">Google Sheets</div><div class="logo">Notion</div>
+        <div class="logo light">Shopify</div><div class="logo light">Airtable</div><a class="logo-cta">가능한 작업 보기 ›</a><div class="logo light">Slack</div><div class="logo light">Discord</div>
+      </div>
+    </section>
 
-        <section className="logos">
-          <div className="wrap logo-grid">
-            <div className="logo">cafe24</div>
-            <div className="logo">imweb</div>
-            <div className="logo">KakaoTalk</div>
-            <div className="logo">Google Sheets</div>
-            <div className="logo">Notion</div>
-            <div className="logo light">Shopify</div>
-            <div className="logo light">Airtable</div>
-            <a className="logo-cta">작업 범위 보기 ›</a>
-            <div className="logo light">Slack</div>
-            <div className="logo light">Discord</div>
-          </div>
-        </section>
-
-        <section className="section center">
-          <div className="wrap">
-            <h2>빠르면서 만족스러운<br />개발물을 제공할 수 있는 이유.</h2>
-            <p className="desc">작업을 빠르게 끝내는 것이 아니라, 반복되는 판단을 시스템화해 제작 속도와 결과물의 기준을 함께 끌어올립니다.</p>
-            <div className="flow">
-              <div className="flow-track" />
-              <div className="flow-item step-card"><span>01</span><b>요청 정리</b></div>
-              <div className="flow-item system-card"><span>제작 시스템</span><b>범위·구조 기준화</b></div>
-              <div className="flow-item step-card"><span>02</span><b>디자인·개발</b></div>
-              <div className="flow-item system-card"><span>검수 시스템</span><b>모바일·CTA 점검</b></div>
-              <div className="flow-item step-card"><span>03</span><b>배포 준비</b></div>
-              <div className="flow-item system-card"><span>인계 시스템</span><b>운영 기준 정리</b></div>
-              <div className="flow-item step-card"><span>04</span><b>공유·확인</b></div>
-              <div className="flow-note">
-                <b>시스템이 단계 사이의 빈틈을 줄입니다</b>
-                <p>반복되는 확인 항목을 매번 새로 판단하지 않기 때문에 더 빠르고, 놓치는 부분은 더 적어집니다.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="section center">
-          <div className="wrap">
-            <h2>랜딩, 홈페이지, 자사몰까지<br />실제로 쓰이는 형태로 완성합니다</h2>
-            <p className="desc">보여주기 좋은 화면에서 멈추지 않고, 문의 폼, 카카오톡 연결, 결제·배송 설정, 관리자 인계처럼 운영에 필요한 부분까지 챙깁니다.</p>
-            <div className="case-card">
-              <span className="arrow-round left">‹</span>
-              <span className="arrow-round right">›</span>
-              <h3>CAFE24 STORE</h3>
-              <div className="num">300</div>
-              <p>상품 상세, 모바일 배너, 결제·배송 설정, 문의 연결까지 운영자가 바로 판매를 시작할 수 있는 형태로 정리합니다.</p>
-              <a>사례 보기 ›</a>
-            </div>
-          </div>
-        </section>
-
-        <section className="section">
-          <div className="wrap">
-            <div className="intro-grid">
-              <h2>완성도는<br />시스템에서 나옵니다</h2>
-              <p className="desc intro-desc">모바일 반응형, 로딩 속도, 폼 연결, SEO 기본값, 배포, 운영 인계처럼 작은 항목들이 모여 실제로 쓸 수 있는 웹사이트가 됩니다.</p>
-            </div>
-            <div className="ai-city">
-              <div className="grid-floor" />
-              <div className="building purple">STATUS<br />HUB</div>
-              <div className="building b1" />
-              <div className="building b2" />
-              <div className="building b3" />
-              <div className="building b4" />
-              <div className="building b5" />
-              <div className="building b6" />
-            </div>
-          </div>
-        </section>
-
-        <section className="section center">
-          <div className="wrap">
-            <h2>개발물의 완성도를 높이는 시스템</h2>
-            <p className="desc">좋은 결과물을 우연에 맡기지 않습니다. 제작, 검수, 인계, 공유가 하나의 시스템으로 이어지게 만듭니다.</p>
-            <div className="reason-grid">
-              <div className="reason"><div className="ico">1</div><h3>제작 시스템 ›</h3><p>반응형, CTA, 폼, 콘텐츠 구조에 체크리스트를 적용하며 구현합니다.</p></div>
-              <div className="reason"><div className="ico">2</div><h3>검수 시스템 ›</h3><p>모바일, 링크, 문의 폼, 배포, SEO 기본값을 출시 전 기준으로 점검합니다.</p></div>
-              <div className="reason"><div className="ico">3</div><h3>인계 시스템 ›</h3><p>배포 주소, 계정, 수정 방법, 다음 개선 항목을 운영자가 볼 수 있게 남깁니다.</p></div>
-              <div className="reason"><div className="ico">4</div><h3>공유 시스템 ›</h3><p>진행 상황과 확인할 일을 남겨 완성도가 흐려지지 않게 관리합니다.</p></div>
-            </div>
-          </div>
-        </section>
-
-        <FeatureOne />
-        <FeatureTwo />
-        <FeatureThree />
-
-        <section className="omni center">
-          <div className="wrap">
-            <div className="kicker">공유 시스템</div>
-            <h2>진행 상황 공유도<br />시스템 안에서 관리합니다</h2>
-            <p className="desc">요청사항이 흩어지지 않도록 한곳에 모으고, 확인해야 할 일을 정리합니다. 공유는 보여주기용 기능이 아니라 결과물의 완성도를 지키는 운영 시스템입니다.</p>
-            <div className="app-shot">
-              <aside className="side"><div className="dot" /><div className="list-item" /><div className="list-item w80" /><div className="list-item w70" /><div className="list-item" /></aside>
-              <main className="chat-main"><div className="msg">카페24 모바일 배너 수정 요청</div><div className="msg">문의 폼은 카카오톡 채널로 연결해주세요.</div><div className="msg">오늘 확인할 항목 2개가 있습니다.</div></main>
-              <aside className="profile"><div className="avatar" /><div className="list-item" /><div className="list-item w70" /><div className="list-item w90" /></aside>
-            </div>
-            <div className="channel-icons"><span>Talk</span><span>Mail</span><span>Board</span><span>Call</span><span>Sheet</span><span>Bot</span></div>
-          </div>
-        </section>
-
-        <section className="section center">
-          <div className="wrap">
-            <h2>도구보다 중요한 건 시스템입니다</h2>
-            <p className="desc">품질을 만드는 건 기준과 반복 가능한 시스템입니다. 무엇을 만들고 어떤 수준으로 완성할지는 사람이 판단합니다.</p>
-            <div className="human-grid">
-              <div className="human-card"><div className="mini-panel"><b>요청 목록</b><p>CTA 수정<br />배너 교체<br />카카오톡 연결</p></div></div>
-              <div className="human-card"><div className="phone-small"><b>이번 고객</b><p>오픈일 D-5<br />확인 요청 3개</p></div></div>
-              <div className="human-card"><div className="tree"><div className="root">필수 작업</div><div className="node n1">문의폼</div><div className="node n2">모바일</div><div className="node n3">배너</div></div></div>
-            </div>
-            <div className="human-caption"><div><h3>요청 맥락을 한 눈에</h3><p>고객이 남긴 요청과 진행 상태를 한곳에서 봅니다.</p></div><div><h3>놓치는 내용 없이 요약</h3><p>확인할 항목과 남은 작업을 짧게 정리합니다.</p></div><div><h3>필수 작업부터 선택</h3><p>마감 전 필요한 기능을 먼저 선별합니다.</p></div></div>
-            <div className="stats-grid"><div className="stat-card"><b>30</b><span>랜딩페이지 시작가</span></div><div className="stat-card"><b>100</b><span>홈페이지 시작가</span></div><div className="stat-card"><b>300</b><span>cafe24 자사몰 시작가</span></div></div>
-            <div className="platform"><div><h3>완성도 있는 개발물을 위한 실무 스택</h3><p className="desc platform-desc">프로젝트 성격에 맞춰 cafe24, imweb, Kakao, Make, Notion, Airtable 등을 필요한 만큼 연결합니다.</p></div><div className="platform-box"><div>cafe24</div><div>imweb</div><div>Kakao</div><div>make</div><div>notion</div><div>airtable</div></div></div>
-          </div>
-        </section>
-
-        <section className="final-cta">
-          <div className="wrap">
-            <h2>출시할 웹사이트가 필요하다면<br />먼저 범위를 정리해드립니다</h2>
-            <form className="search-cta final-search"><input placeholder="만들고 싶은 웹사이트나 자사몰을 적어주세요" /><button className="go">→</button></form>
-            <div className="chips center-chips"><span className="chip">랜딩페이지</span><span className="chip">홈페이지</span><span className="chip">카페24</span><span className="chip">자동화</span></div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="footer">
-        <div className="wrap footer-grid">
-          <div><a className="brand"><span className="mark">✓</span> Visible Dev</a><p className="copyright">© 2026 Visible Dev<br />완성도 있는 개발물을 위한 외주 시안</p></div>
-          <FooterCol title="서비스" items={["랜딩페이지", "홈페이지", "카페24 자사몰", "자동화"]} />
-          <FooterCol title="가격" items={["작업 범위", "일정 상담", "추후 개선"]} />
-          <FooterCol title="블로그" items={["외주 일정 관리", "카페24 운영", "랜딩페이지 전환"]} />
-          <FooterCol title="리소스" items={["FAQ", "체크리스트", "문의하기"]} />
-          <FooterCol title="회사" items={["소개", "사례", "파트너"]} />
+    <section class="section center">
+      <div class="wrap">
+        <h2>빠른 외주는 왜 항상 퀄리티가 아쉬울까요?</h2>
+        <p class="desc">급하게 만들면 매번 즉흥적으로 판단하게 되고, 그때마다 빠뜨리는 항목과 편차가 생깁니다. 그래서 반복되는 판단을 시스템으로 고정해, 빠르게 만들어도 기준이 흔들리지 않게 합니다.</p>
+        <div class="quality-chart">
+          <svg viewBox="0 0 880 250" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="시스템을 적용하면 퀄리티가 기준선 위에서 일정하게 유지되지만, 시스템 없이 즉흥적으로 만들면 퀄리티가 기준 아래로 출렁이는 비교 그래프">
+            <rect x="70" y="150" width="670" height="74" fill="rgba(225,83,93,.045)"/>
+            <path d="M70 118 L182 104 L294 110 L406 100 L518 106 L630 96 L740 102 L740 150 L70 150 Z" fill="rgba(94,86,240,.07)"/>
+            <line x1="70" y1="150" x2="740" y2="150" stroke="#d7d7de" stroke-width="1.5" stroke-dasharray="5 5"/>
+            <polyline points="70,132 182,168 294,126 406,190 518,150 630,206 740,172" fill="none" stroke="#e58b86" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <polyline points="70,118 182,104 294,110 406,100 518,106 630,96 740,102" fill="none" stroke="#5e56f0" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <g fill="#e58b86"><circle cx="70" cy="132" r="3.5"/><circle cx="182" cy="168" r="3.5"/><circle cx="294" cy="126" r="3.5"/><circle cx="406" cy="190" r="3.5"/><circle cx="518" cy="150" r="3.5"/><circle cx="630" cy="206" r="3.5"/><circle cx="740" cy="172" r="3.5"/></g>
+            <g fill="#5e56f0"><circle cx="70" cy="118" r="4.5"/><circle cx="182" cy="104" r="4.5"/><circle cx="294" cy="110" r="4.5"/><circle cx="406" cy="100" r="4.5"/><circle cx="518" cy="106" r="4.5"/><circle cx="630" cy="96" r="4.5"/><circle cx="740" cy="102" r="4.5"/></g>
+            <image href="/logo.png" x="748" y="93" width="100" height="18"/>
+            <text x="752" y="176" fill="#d9706b" font-size="14" font-weight="700">기존 외주</text>
+            <text x="74" y="168" fill="#b4b7bf" font-size="12" font-weight="600">퀄리티 기준선</text>
+            <text x="596" y="232" fill="#cf8f8b" font-size="12" font-weight="600">편차·누락 발생</text>
+          </svg>
         </div>
-      </footer>
-
-      <div className="float-chat">
-        <div className="q">어떤 사이트가 필요하신가요?</div>
-        <div className="q">작업 범위를 정리해드릴게요.</div>
-        <div className="chat-btn">💬</div>
       </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div style="text-align:center;margin-bottom:var(--space-16)">
+          <h2>이미 시스템대로 만들어 오픈한 기업들의 진짜 결과가 있습니다</h2>
+          <p class="desc">그럴듯한 시안이나 가능성에 대한 이야기가 아닙니다. 현장에서 이미 검증된 진짜 제작 사례입니다. 업종·규모별로 오픈 일정, 작업 범위, 진행 방식이 어떻게 달라졌는지 직접 확인해 보세요.</p>
+        </div>
+        <div class="case-tabs">
+          <div class="tab-group">
+            <a class="active" data-cat="all">전체</a><a data-cat="commerce">자사몰</a><a data-cat="homepage">홈페이지</a><a data-cat="platform">플랫폼</a>
+          </div>
+          <a class="tab-all">모든 사례 보기</a>
+        </div>
+        <div class="case-stage">
+          <button class="case-nav prev" type="button" aria-label="이전 사례">‹</button>
+          <div class="case-track" id="caseTrack">
+            <article class="case-card case-1" data-cat="commerce">
+              <div class="case-inner">
+                <div class="case-brand">러닝 브랜드 · 자사몰</div>
+                <div class="case-stat">2.1<small>배</small></div>
+                <div class="case-stat-label">리뉴얼 후 구매 전환</div>
+                <p class="case-quote">“필수 기능부터 잡고 빠르게 오픈한 뒤, 데이터를 보며 개선했어요. 일정도 퀄리티도 놓치지 않았습니다.”<em>러닝화 D2C 자사몰 리뉴얼</em></p>
+                <div class="case-author">마케팅 담당</div>
+                <a class="case-more">사례 자세히 보기 ›</a>
+              </div>
+            </article>
+            <article class="case-card case-2" data-cat="homepage">
+              <div class="case-inner">
+                <div class="case-brand">시공사 · 홈페이지</div>
+                <div class="case-stat">3.4<small>배</small></div>
+                <div class="case-stat-label">월 온라인 견적 문의</div>
+                <p class="case-quote">“시공 포트폴리오와 문의 흐름을 믿음직하게 정리해, 전화보다 온라인 문의가 늘었습니다.”<em>인테리어 시공사 홈페이지 제작</em></p>
+                <div class="case-author">대표</div>
+                <a class="case-more">사례 자세히 보기 ›</a>
+              </div>
+            </article>
+            <article class="case-card case-3" data-cat="platform">
+              <div class="case-inner">
+                <div class="case-brand">플랫폼 · MVP</div>
+                <div class="case-stat">21<small>일</small></div>
+                <div class="case-stat-label">기획부터 베타 오픈까지</div>
+                <p class="case-quote">“핵심 화면과 가입·문의 플로우를 먼저 구현해, 빠르게 사용자 반응을 확인했습니다.”<em>초기 스타트업 MVP 구축</em></p>
+                <div class="case-author">대표</div>
+                <a class="case-more">사례 자세히 보기 ›</a>
+              </div>
+            </article>
+          </div>
+          <button class="case-nav next" type="button" aria-label="다음 사례">›</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start" class="intro-grid">
+          <h2>쓰면 쓸수록 프로젝트가 투명해집니다</h2>
+          <p class="desc" style="margin:0">작업 요청, 남은 기능, 확인 필요한 항목을 한곳에 모읍니다. 고객은 기다리기만 하지 않고 무엇을 먼저 봐야 하는지, 어떤 것이 마감 이후로 넘어가는지 확인할 수 있습니다.</p>
+        </div>
+        <div class="ai-city">
+          <div class="grid-floor"></div><div class="building purple">STATUS<br/>HUB</div><div class="building b1"></div><div class="building b2"></div><div class="building b3"></div><div class="building b4"></div><div class="building b5"></div><div class="building b6"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section center">
+      <div class="wrap">
+        <h2>마감 안에 쓸 수 있는 결과물을 만드는 이유</h2>
+        <p class="desc">작업을 시작하기 전에 목표 일정과 필수 기능을 나눕니다. 필요한 것은 먼저 만들고, 있으면 좋은 것은 이후 개선으로 돌립니다.</p>
+        <div class="reason-grid">
+          <div class="reason"><div class="ico">1</div><h3>필수 범위 구분 ›</h3><p>Must-have와 Later를 나눠 마감 전 공개 가능한 범위를 먼저 정합니다.</p></div>
+          <div class="reason"><div class="ico">2</div><h3>진행 상황 공유 ›</h3><p>남은 작업, 확인 요청, 변경 사항을 문서나 대시보드로 볼 수 있게 합니다.</p></div>
+          <div class="reason"><div class="ico">3</div><h3>직접 확인 가능한 결과물 ›</h3><p>페이지, 폼, 카카오톡 연결처럼 실제 사용 가능한 단위로 확인합니다.</p></div>
+          <div class="reason"><div class="ico">4</div><h3>개선 사항 분리 ›</h3><p>마감 이후 고도화할 항목을 따로 두어 일정과 품질을 함께 관리합니다.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature">
+      <div class="wrap">
+        <div class="feature-head"><div class="kicker">진행 규칙</div><h2>범위가 부풀지 않게 ‘필수’와 ‘나중’을 먼저 나눕니다</h2><p class="desc">작업 범위가 부풀어 오르지 않도록, 필수 기능과 추후 개선 항목을 분리합니다. 고객은 지금 어떤 작업이 왜 먼저인지 확인할 수 있습니다.</p></div>
+        <div class="feature-grid"><div class="visual-card visual-blue"><div class="panel-fake"><div class="row"><b>기본 CTA 연결</b><span class="switch"></span></div><div class="row"><b>카페24 모바일 배너</b><span>필수</span></div><div class="row"><b>관리자 통계 화면</b><span>추후</span></div></div></div><div class="chat-card"><div class="chat-line">지금까지 어떤 작업이 먼저인가요?</div><div class="chat-line">마감 전 필수는 문의 연결과 모바일 CTA입니다.</div><div class="before-after"><b>Before</b><span>After</span></div></div></div>
+        <div class="caption-grid"><div class="caption"><h3>규칙 설정</h3><p><b>마감 전 반드시 필요한 것</b>과 나중에 개선해도 되는 것을 분리해 일정 리스크를 낮춥니다.</p></div><div class="caption"><h3>규칙이 없을 때</h3><p>좋아 보이는 기능이 계속 늘어나면 정작 오픈일에 필요한 것이 늦어집니다.</p></div></div>
+      </div>
+    </section>
+
+    <section class="feature">
+      <div class="wrap">
+        <div class="feature-head"><div class="kicker">상태</div><h2>기록하는 순간 외주는 블랙박스가 아니게 됩니다</h2><p class="desc">요청사항과 진행 상태를 기록하면 외주가 블랙박스가 되지 않습니다. 어떤 요청이 완료됐고 어떤 항목이 확인 대기인지 볼 수 있습니다.</p></div>
+        <div class="feature-grid"><div class="visual-card visual-pink"><div class="panel-fake"><div class="row"><b>랜딩페이지 히어로</b><span>100%</span></div><div class="row"><b>카페24 기획전</b><span>80%</span></div><div class="row"><b>카카오톡 연결</b><span>확인중</span></div></div></div><div class="chat-card"><div class="chat-line">지금 내가 확인해야 하는 것은?</div><div class="chat-line">CTA 문구와 카카오톡 채널 연결만 확인하면 됩니다.</div><div class="chat-line me">확인했습니다.</div></div></div>
+        <div class="caption-grid"><div class="caption"><h3>상태 관리</h3><p>완료, 진행중, 확인 대기, 추후 개선 항목을 나눠 고객이 직접 판단할 수 있게 합니다.</p></div><div class="caption"><h3>묻지 않아도 되는 데이터</h3><p>작업 상태가 보이면 “지금 어디까지 됐나요?”라는 반복 질문이 줄어듭니다.</p></div></div>
+      </div>
+    </section>
+
+    <section class="feature">
+      <div class="wrap">
+        <div class="feature-head"><div class="kicker">태스크 실행</div><h2>안내로 끝내지 않고 실제 결과물까지 만듭니다</h2><p class="desc">상담에서 끝나지 않고 카페24 수정, 랜딩페이지 제작, 자동화 연결까지 필요한 결과물을 만듭니다.</p></div>
+        <div class="feature-grid"><div class="visual-card visual-dark"><div class="panel-fake" style="width:78%;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:transparent;box-shadow:none"><div class="row" style="height:76px;display:block;padding:12px"><b>카페24</b><br><span>기획전 수정</span></div><div class="row" style="height:76px;display:block;padding:12px"><b>랜딩</b><br><span>문의 폼 연결</span></div><div class="row" style="height:76px;display:block;padding:12px"><b>자동화</b><br><span>알림 발송</span></div></div></div><div class="chat-card"><div class="chat-line">주문 자동화 해주세요</div><div class="chat-line">가능합니다. 먼저 주문 확인과 알림 범위를 나누겠습니다.</div><div class="before-after"><b>Before</b><span>After</span></div></div></div>
+        <div class="caption-grid"><div class="caption"><h3>태스크 실행</h3><p>상담과 기획에서 멈추지 않고, 실제 페이지와 자동화가 동작하는 형태로 만듭니다.</p></div><div class="caption"><h3>단순 안내만 반복한다면?</h3><p>결국 고객이 직접 처리해야 합니다. 필요한 것은 안내가 아니라 실행입니다.</p></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="kicker">평가 및 개선</div><h2>공개가 끝이 아니라 지표 보고 다음 개선까지</h2><p class="desc" style="margin:0">페이지 공개 후 문의, 클릭, 상담 연결 같은 지표를 보며 다음 개선 항목을 정리합니다.</p>
+        <div class="feature-grid" style="margin-top:48px"><div class="visual-card visual-green"><div class="panel-fake"><div class="row"><b>문의 전환</b><span>4.6%</span></div><div class="row"><b>상담 연결</b><span>86.2%</span></div><div class="row"><b>다음 개선</b><span>CTA 문구</span></div></div></div><div class="visual-card visual-lavender"><div class="panel-fake"><div class="row"><b>AI가 모아본 개선점</b><span>3개</span></div><div class="row"><b>히어로 문구</b><span>우선</span></div><div class="row"><b>FAQ 보강</b><span>다음</span></div></div></div></div>
+      </div>
+    </section>
+
+    <section class="omni center">
+      <div class="wrap">
+        <div class="kicker">채널박스</div><h2>카톡, 이메일, 게시판, 전화까지 프로젝트 채널을 하나로 통합하세요</h2><p class="desc">요청사항이 흩어지지 않도록 한곳에 모으고, 확인해야 할 일을 정리합니다.</p>
+        <div class="app-shot"><aside class="side"><div class="dot"></div><div class="list-item"></div><div class="list-item" style="width:80%"></div><div class="list-item" style="width:70%"></div><div class="list-item"></div></aside><main class="chat-main"><div class="msg">카페24 모바일 배너 수정 요청</div><div class="msg">문의 폼은 카카오톡 채널로 연결해주세요.</div><div class="msg">오늘 확인할 항목 2개가 있습니다.</div></main><aside class="profile"><div class="avatar"></div><div class="list-item"></div><div class="list-item" style="width:70%"></div><div class="list-item" style="width:90%"></div></aside></div>
+        <div class="channel-icons"><span>Talk</span><span>Mail</span><span>Board</span><span>Call</span><span>Sheet</span><span>Bot</span></div>
+      </div>
+    </section>
+
+    <section class="section center">
+      <div class="wrap">
+        <h2>결국, 중요한 결정은 사람이 해야 합니다</h2><p class="desc">AI와 자동화는 빠르게 도와주지만, 무엇을 먼저 만들고 어떤 범위를 마감 이후로 돌릴지는 사람의 판단이 필요합니다.</p>
+        <div class="human-grid"><div class="human-card"><div class="mini-panel"><b>요청 목록</b><p>CTA 수정<br>배너 교체<br>카카오톡 연결</p></div></div><div class="human-card"><div class="phone-small"><b>이번 고객</b><p style="font-size:12px;color:#666">오픈일 D-5<br>확인 요청 3개</p></div></div><div class="human-card"><div class="tree"><div class="root">필수 작업</div><div class="node n1">문의폼</div><div class="node n2">모바일</div><div class="node n3">배너</div></div></div></div>
+        <div class="human-caption"><div><h3>요청 맥락을 한 눈에</h3><p>고객이 남긴 요청과 진행 상태를 한곳에서 봅니다.</p></div><div><h3>놓치는 내용 없이 요약</h3><p>확인할 항목과 남은 작업을 짧게 정리합니다.</p></div><div><h3>필수 작업부터 선택</h3><p>마감 전 필요한 기능을 먼저 선별합니다.</p></div></div>
+        <div class="stats-grid"><div class="stat-card"><b>5분</b><span>즉시 자동 견적</span></div><div class="stat-card"><b>3종</b><span>표준 패키지 · 30/100/300만</span></div><div class="stat-card"><b>6개월</b><span>출시 후 기본 오류 무상 보증</span></div></div>
+        <div class="platform"><div><h3>글로벌 스탠더드보다 중요한 건 내 일정</h3><p class="desc" style="margin:0;font-size:13px">많은 도구보다 지금 내 프로젝트가 어디까지 왔는지 보이는 것이 중요합니다.</p></div><div class="platform-box"><div>cafe24</div><div>imweb</div><div>Kakao</div><div>make</div><div>notion</div><div>airtable</div></div></div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="wrap">
+        <h2>지금 만들 사이트만 적어주세요. 5분 안에 견적을 드립니다</h2>
+        <form class="search-cta" style="margin:30px auto 0"><input placeholder="만들고 싶은 사이트나 브랜드를 입력해보세요"/><button class="go" aria-label="견적 받기">↑</button></form>
+        <div class="chips" style="justify-content:center"><span>가격 공개</span><span class="chip">랜딩 30만</span><span class="chip">홈 100만</span><span class="chip">자사몰 300만</span><span class="chip">6개월 보증</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-grid">
+      <div><a class="brand"><img class="logo-img" src="/logo.png" alt="System Web" /></a><p style="font-size:12px;line-height:1.8;margin-top:32px;color:#9a9da5">© 2026 Visible Dev<br/>마감 안에 끝내고, 진행이 보이는 개발 외주</p></div>
+      <div><h4>기능</h4><a>진행 상황 공유</a><a>카페24 개발</a><a>랜딩페이지</a><a>자동화</a></div>
+      <div><h4>가격</h4><a>작업 범위</a><a>일정 상담</a><a>추후 개선</a></div>
+      <div><h4>블로그</h4><a>외주 일정 관리</a><a>카페24 운영</a><a>랜딩페이지 전환</a></div>
+      <div><h4>리소스</h4><a>FAQ</a><a>체크리스트</a><a>문의하기</a></div>
+      <div><h4>회사</h4><a>소개</a><a>사례</a><a>파트너</a></div>
     </div>
-  );
-}
+  </footer>
+`;
 
-function Panel({ rows }) {
-  return (
-    <div className="panel-fake">
-      {rows.map(([label, value]) => (
-        <div className="row" key={label}><b>{label}</b><span>{value}</span></div>
-      ))}
-    </div>
-  );
-}
+export default function HomePage() {
+  const ref = useRef(null);
 
-function FeatureOne() {
-  return (
-    <section className="feature">
-      <div className="wrap">
-        <div className="feature-head"><div className="kicker">제작 시스템</div><h2>반응형과 CTA는 제작 기준으로 관리합니다</h2><p className="desc">웹사이트는 데스크톱보다 모바일에서 더 많이 확인됩니다. CTA, 폼, 이미지, 텍스트가 작은 화면에서도 자연스럽게 보이도록 제작 기준을 먼저 적용합니다.</p></div>
-        <div className="feature-grid"><div className="visual-card visual-blue"><Panel rows={[["모바일 레이아웃", "확인"], ["CTA 버튼", "고정"], ["문의 폼", "연결"]]} /></div><div className="chat-card"><div className="chat-line">모바일에서 버튼이 잘 보이나요?</div><div className="chat-line">주요 CTA와 문의 폼은 첫 화면에서 바로 확인됩니다.</div><div className="before-after"><b>PC</b><span>Mobile</span></div></div></div>
-        <div className="caption-grid"><div className="caption"><h3>제작 기준</h3><p><b>작은 화면에서 실제로 쓰기 편한지</b>까지 확인합니다. 화면만 줄이는 것이 아니라 사용 흐름을 기준에 맞춰 다시 정리합니다.</p></div><div className="caption"><h3>놓치기 쉬운 부분</h3><p>이미지 비율, 긴 문장, 버튼 위치, 폼 입력 영역이 모바일에서 자주 깨집니다.</p></div></div>
-      </div>
-    </section>
-  );
-}
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const track = root.querySelector("#caseTrack");
+    const prev = root.querySelector(".case-nav.prev");
+    const next = root.querySelector(".case-nav.next");
+    const tabs = Array.from(root.querySelectorAll(".case-tabs .tab-group a"));
+    if (!track) return;
 
-function FeatureTwo() {
-  return (
-    <section className="feature">
-      <div className="wrap">
-        <div className="feature-head"><div className="kicker">검수 시스템</div><h2>출시 전 기준으로 빠짐없이 점검합니다</h2><p className="desc">랜딩페이지와 자사몰은 화면을 구현하는 것만으로 부족합니다. 모바일, CTA, 문의 흐름, 링크, SEO 기본값까지 검수 기준에 따라 확인합니다.</p></div>
-        <div className="feature-grid"><div className="visual-card visual-pink"><Panel rows={[["모바일 검수", "완료"], ["CTA 검수", "개선"], ["SEO 기본값", "확인"]]} /></div><div className="chat-card"><div className="chat-line">그냥 예쁘게만 만들면 되나요?</div><div className="chat-line">아니요. 출시 전에 실제 사용 기준으로 링크, 폼, 모바일 화면을 점검합니다.</div><div className="chat-line me">좋아요.</div></div></div>
-        <div className="caption-grid"><div className="caption"><h3>검수 기준</h3><p>마케팅, UX, 기획 관점의 체크리스트가 <b>검수 과정</b>에 적용됩니다. 그래서 단순 퍼블리싱보다 결과물이 더 실무적으로 작동합니다.</p></div><div className="caption"><h3>놓치지 않는 마무리</h3><p>누가 보는지, 무엇을 믿고 문의하는지, 어떤 CTA가 필요한지를 배포 전까지 확인합니다.</p></div></div>
-      </div>
-    </section>
-  );
-}
+    const cards = () => Array.from(track.querySelectorAll(".case-card"));
+    const stepSize = () => {
+      const c = cards().find((el) => el.style.display !== "none");
+      return c ? c.offsetWidth : track.clientWidth;
+    };
+    const onPrev = () => track.scrollBy({ left: -stepSize(), behavior: "smooth" });
+    const onNext = () => track.scrollBy({ left: stepSize(), behavior: "smooth" });
+    prev?.addEventListener("click", onPrev);
+    next?.addEventListener("click", onNext);
 
-function FeatureThree() {
-  return (
-    <section className="feature">
-      <div className="wrap">
-        <div className="feature-head"><div className="kicker">인계 시스템</div><h2>만들고 끝나지 않도록 운영 기준을 남깁니다</h2><p className="desc">배포 후 어디를 수정해야 하는지, 어떤 계정을 써야 하는지, 다음 개선은 무엇인지 알 수 있어야 합니다. 운영자가 이어서 쓸 수 있게 인계 기준을 남깁니다.</p></div>
-        <div className="feature-grid"><div className="visual-card visual-dark"><div className="panel-fake task-panel"><div className="row task-row"><b>cafe24</b><br /><span>운영 가이드</span></div><div className="row task-row"><b>랜딩</b><br /><span>배포 주소</span></div><div className="row task-row"><b>자동화</b><br /><span>알림 흐름</span></div></div></div><div className="chat-card"><div className="chat-line">나중에 직접 수정할 수 있나요?</div><div className="chat-line">자주 바뀌는 영역과 계정 정보를 따로 정리해드립니다.</div><div className="before-after"><b>Build</b><span>Handoff</span></div></div></div>
-        <div className="caption-grid"><div className="caption"><h3>인계 기준</h3><p>배포 주소, 관리자 접근, 수정 방법, 다음 개선 항목을 함께 인계합니다.</p></div><div className="caption"><h3>개발자의 도움만 기다리지 않도록</h3><p>운영자가 직접 볼 수 있는 구조를 남겨야 실제로 오래 쓰입니다.</p></div></div>
-      </div>
-    </section>
-  );
-}
+    const onTab = (e) => {
+      const tab = e.currentTarget;
+      const cat = tab.dataset.cat;
+      tabs.forEach((t) => t.classList.toggle("active", t === tab));
+      cards().forEach((c) => {
+        c.style.display = cat === "all" || c.dataset.cat === cat ? "" : "none";
+      });
+      track.scrollTo({ left: 0, behavior: "auto" });
+    };
+    tabs.forEach((t) => t.addEventListener("click", onTab));
 
-function FooterCol({ title, items }) {
+    return () => {
+      prev?.removeEventListener("click", onPrev);
+      next?.removeEventListener("click", onNext);
+      tabs.forEach((t) => t.removeEventListener("click", onTab));
+    };
+  }, []);
+
   return (
-    <div>
-      <h4>{title}</h4>
-      {items.map((item) => <a key={item}>{item}</a>)}
+    <div ref={ref}>
+      <style dangerouslySetInnerHTML={{ __html: css }} />
+      <div dangerouslySetInnerHTML={{ __html: body }} />
     </div>
   );
 }
