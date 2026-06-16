@@ -1,13 +1,7 @@
-"use client";
-
-// 블로그 (/blog) — channel.io/ko/blog 레이아웃 패턴 차용 (구조만, 카피·이미지는 placeholder)
-// 구조: featured 히어로 → 카테고리 탭 필터 → 3열 아티클 카드 그리드 → 뉴스레터 → 푸터
-// 컨벤션: 인라인 css + body 문자열을 dangerouslySetInnerHTML로 렌더, 인터랙션은 useEffect 바인딩.
-//
-// ▸ 디자인 조절은 아래 :root 토큰 블록만 수정하면 전체에 반영됩니다.
-
-import { useEffect, useRef } from "react";
 import { navCss, getNavHtml } from "../components/navHtml";
+import { formatDate, getPostAuthor, listPublicPosts } from "../../lib/cms";
+
+export const dynamic = "force-dynamic";
 
 const css = `
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css');
@@ -135,7 +129,6 @@ ${navCss}
 }
 `;
 
-// placeholder 아티클 데이터 (카테고리별 필터에 사용)
 const CATS = [
   { key: "all", label: "전체" },
   { key: "event", label: "이벤트" },
@@ -153,34 +146,56 @@ const CAT_LABEL = {
   news: "뉴스룸",
 };
 
-const ARTICLES = Array.from({ length: 9 }).map((_, i) => {
-  const cats = ["case", "tip", "insight", "event", "news"];
+const PLACEHOLDER_ARTICLES = Array.from({ length: 6 }).map((_, i) => {
+  const cats = ["case", "tip", "event", "news"];
   const cat = cats[i % cats.length];
   return {
     cat,
     slug: `article-${i + 1}`,
     ph: `ph-${(i % 5) + 1}`,
     title: `아티클 제목 자리입니다 — 플레이스홀더 제목 ${i + 1}`,
-    excerpt:
-      "본문 요약이 들어갈 자리입니다. 두 줄 정도의 발췌문이 카드에 표시되며 실제 내용으로 교체하면 됩니다.",
+    excerpt: "본문 요약이 들어갈 자리입니다. 실제 내용으로 교체하면 됩니다.",
     author: ["에디터", "운영팀", "디자인팀"][i % 3],
     date: `2026년 6월 ${((i * 3) % 28) + 1}일`,
   };
 });
 
+function escapeHtml(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function toInsightArticle(post, index) {
+  return {
+    cat: "insight",
+    slug: post.slug,
+    ph: `ph-${(index % 5) + 1}`,
+    title: post.title,
+    excerpt: post.excerpt || post.metaDescription || post.coreMessage || "비즈니스 운영과 검색 유입 개선에 필요한 실무 인사이트입니다.",
+    author: getPostAuthor(post),
+    date: formatDate(post.publishedAt || post.updatedAt),
+    real: true,
+  };
+}
+
 const cardHTML = (a) => `
-  <a class="card" href="/blog/articles/${a.slug}" data-cat="${a.cat}">
-    <div class="thumb ph ${a.ph}"></div>
-    <div class="tag">${CAT_LABEL[a.cat]}</div>
-    <h3>${a.title}</h3>
-    <p class="excerpt">${a.excerpt}</p>
+  <a class="card" href="/blog/articles/${escapeHtml(a.slug)}" data-cat="${escapeHtml(a.cat)}">
+    <div class="thumb ph ${escapeHtml(a.ph)}"></div>
+    <div class="tag">${escapeHtml(CAT_LABEL[a.cat] || a.cat)}</div>
+    <h3>${escapeHtml(a.title)}</h3>
+    <p class="excerpt">${escapeHtml(a.excerpt)}</p>
     <div class="byline">
       <span class="ava ava-ph"></span>
-      <b>${a.author}</b><span class="dot">·</span><span>${a.date}</span>
+      <b>${escapeHtml(a.author)}</b><span class="dot">·</span><span>${escapeHtml(a.date)}</span>
     </div>
   </a>`;
 
-const body = `${getNavHtml('blog')}
+function buildBody(articles, featured) {
+  return `${getNavHtml('blog')}
 
   <header class="blog-head">
     <div class="wrap">
@@ -191,15 +206,15 @@ const body = `${getNavHtml('blog')}
   </header>
 
   <section class="wrap">
-    <a class="featured" href="/blog/articles/featured-story">
-      <div class="thumb ph"></div>
+    <a class="featured" href="/blog/articles/${escapeHtml(featured.slug)}">
+      <div class="thumb ph ${escapeHtml(featured.ph)}"></div>
       <div>
-        <span class="tag">성공 사례</span>
-        <h2>대표 아티클 제목이 들어갈 자리입니다 — featured 플레이스홀더</h2>
-        <p class="excerpt">메인에 노출되는 대표 글의 요약문이 들어갑니다. 실제 발행 시 핵심 메시지로 교체하세요. 이 영역은 channel.io 블로그의 featured 히어로 구조를 차용했습니다.</p>
+        <span class="tag">${escapeHtml(CAT_LABEL[featured.cat] || featured.cat)}</span>
+        <h2>${escapeHtml(featured.title)}</h2>
+        <p class="excerpt">${escapeHtml(featured.excerpt)}</p>
         <div class="byline">
           <span class="ava ava-ph"></span>
-          <b>에디터</b><span class="dot">·</span><span>2026년 6월 9일</span>
+          <b>${escapeHtml(featured.author)}</b><span class="dot">·</span><span>${escapeHtml(featured.date)}</span>
         </div>
       </div>
     </a>
@@ -207,17 +222,14 @@ const body = `${getNavHtml('blog')}
 
   <nav class="cat-bar">
     <div class="wrap" id="catBar">
-      ${CATS.map(
-        (c, i) =>
-          `<button class="cat${i === 0 ? " active" : ""}" data-cat="${c.key}">${c.label}</button>`
-      ).join("")}
+      ${CATS.map((c, i) => `<button class="cat${i === 0 ? " active" : ""}" data-cat="${c.key}">${c.label}</button>`).join("")}
     </div>
   </nav>
 
   <section class="grid-sec">
     <div class="wrap">
       <div class="card-grid" id="cardGrid">
-        ${ARTICLES.map(cardHTML).join("")}
+        ${articles.map(cardHTML).join("")}
       </div>
       <div class="more-row"><button class="btn-more">더 보기</button></div>
     </div>
@@ -242,53 +254,46 @@ const body = `${getNavHtml('blog')}
       <div><h4>회사</h4><a>소개</a><a>사례</a><a>파트너</a></div>
     </div>
   </footer>
-`;
+  <script>
+    (() => {
+      const bar = document.querySelector("#catBar");
+      const grid = document.querySelector("#cardGrid");
+      if (!bar || !grid) return;
+      const tabs = Array.from(bar.querySelectorAll(".cat"));
+      const cards = Array.from(grid.querySelectorAll(".card"));
+      tabs.forEach((tab) => tab.addEventListener("click", () => {
+        const cat = tab.dataset.cat;
+        tabs.forEach((t) => t.classList.toggle("active", t === tab));
+        let shown = 0;
+        cards.forEach((card) => {
+          const match = cat === "all" || card.dataset.cat === cat;
+          card.style.display = match ? "" : "none";
+          if (match) shown += 1;
+        });
+        let empty = grid.querySelector(".empty");
+        if (!shown) {
+          if (!empty) {
+            empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "해당 카테고리의 글이 아직 없습니다.";
+            grid.appendChild(empty);
+          }
+        } else if (empty) empty.remove();
+      }));
+    })();
+  </script>`;
+}
 
-export default function BlogPage() {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-
-    const bar = root.querySelector("#catBar");
-    const grid = root.querySelector("#cardGrid");
-    if (!bar || !grid) return;
-
-    const tabs = Array.from(bar.querySelectorAll(".cat"));
-    const cards = Array.from(grid.querySelectorAll(".card"));
-
-    const onTab = (e) => {
-      const tab = e.currentTarget;
-      const cat = tab.dataset.cat;
-      tabs.forEach((t) => t.classList.toggle("active", t === tab));
-      let shown = 0;
-      cards.forEach((c) => {
-        const match = cat === "all" || c.dataset.cat === cat;
-        c.style.display = match ? "" : "none";
-        if (match) shown++;
-      });
-      let empty = grid.querySelector(".empty");
-      if (!shown) {
-        if (!empty) {
-          empty = document.createElement("div");
-          empty.className = "empty";
-          empty.textContent = "해당 카테고리의 글이 아직 없습니다.";
-          grid.appendChild(empty);
-        }
-      } else if (empty) {
-        empty.remove();
-      }
-    };
-
-    tabs.forEach((t) => t.addEventListener("click", onTab));
-    return () => tabs.forEach((t) => t.removeEventListener("click", onTab));
-  }, []);
+export default async function BlogPage() {
+  const posts = await listPublicPosts();
+  const insightArticles = posts.map(toInsightArticle);
+  const articles = [...insightArticles, ...PLACEHOLDER_ARTICLES];
+  const featured = insightArticles[0] || PLACEHOLDER_ARTICLES[0];
 
   return (
-    <div ref={ref}>
+    <div>
       <style dangerouslySetInnerHTML={{ __html: css }} />
-      <div dangerouslySetInnerHTML={{ __html: body }} />
+      <div dangerouslySetInnerHTML={{ __html: buildBody(articles, featured) }} />
     </div>
   );
 }
