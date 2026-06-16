@@ -5,11 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "turso:migrate": "NODE_NO_WARNINGS=1 node scripts/turso-migrate.js"
+    "start": "next start"
   },
   "dependencies": {
-    "@libsql/client": "^0.17.3",
     "next": "^16.2.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
