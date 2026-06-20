@@ -16,5 +16,7 @@ Thumbs.db
 # 설치된 스킬 / 생성 산출물 (도구용, 리포에 불필요)
 .agents/
 .claude/
+.hermes/
 design-extract-output/
 skills-lock.json
+.vercel

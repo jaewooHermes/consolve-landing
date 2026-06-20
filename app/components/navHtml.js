@@ -22,7 +22,7 @@ export function getNavHtml(current) {
         <a${cur('price')} href="/price">가격</a>
         <a${cur('blog')} href="/blog">블로그</a>
       </div>
-      <div class="nav-actions"><a>로그인</a><a class="pill-dark" href="/#contact">5분 견적 받기</a></div>
+      <div class="nav-actions"><a>로그인</a><a class="pill-dark" href="/#quote">5분 견적 받기</a></div>
     </div>
   </nav>`;
 }

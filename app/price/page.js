@@ -154,6 +154,7 @@ const PLANS = [
     note: "3개월 분할 시",
     cta: "5분 견적 받기",
     ctaClass: "ghost",
+    quote: "landing_page",
     feats: [
       "반응형 단일 페이지 1종",
       "문의 폼 · CTA 연결",
@@ -170,6 +171,7 @@ const PLANS = [
     note: "3개월 분할 시",
     cta: "5분 견적 받기",
     ctaClass: "primary",
+    quote: "business_website",
     featured: true,
     feats: [
       "반응형 5~7개 페이지",
@@ -188,6 +190,7 @@ const PLANS = [
     note: "3개월 분할 시",
     cta: "5분 견적 받기",
     ctaClass: "ghost",
+    quote: "ecommerce_site",
     feats: [
       "카페24 · 자사몰 구축",
       "상품 · 기획전 · 결제 연동",
@@ -205,6 +208,7 @@ const PLANS = [
     note: "",
     cta: "문의하기",
     ctaClass: "dark",
+    quote: "custom",
     feats: [
       "요구사항 기반 맞춤 설계",
       "회원 · 대시보드 등 기능 구현",
@@ -255,7 +259,7 @@ const planHTML = (p) => `
     <div class="plan-sub">${p.sub}</div>
     <div class="price" data-once="${p.once}" data-split="${p.split}">${p.once}${p.once.endsWith("만") ? '<small>원~</small>' : ""}</div>
     <div class="price-note">${p.note || ""}</div>
-    <a class="plan-cta ${p.ctaClass}" href="/#contact">${p.cta}</a>
+    <a class="plan-cta ${p.ctaClass}" href="/?quote=${p.quote || 'custom'}#quote">${p.cta}</a>
     <ul class="feat">${p.feats.map((f) => `<li>${f}</li>`).join("")}</ul>
   </div>`;
 
@@ -342,7 +346,7 @@ const body = `${getNavHtml('price')}
     <div class="wrap">
       <h2>견적부터 받아보는 게 제일 빠릅니다</h2>
       <p>만들 사이트만 적어주시면 5분 안에 예상 견적과 일정을 드립니다.</p>
-      <a class="pill-dark" href="/#contact">5분 견적 받기</a>
+      <a class="pill-dark" href="/#quote">5분 견적 받기</a>
       <div class="notes"><span>· 사이트가 없어도 견적 가능</span><span>· 상세 견적은 직접 발송</span><span>· 6개월 무상 보증</span></div>
     </div>
   </section>

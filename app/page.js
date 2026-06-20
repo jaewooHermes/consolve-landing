@@ -473,7 +473,7 @@ const body = `${getNavHtml(null)}
 
     <!-- section: 결국, 중요한 결정은 사람이 합니다 — disabled -->
 
-    <section class="final-cta">
+    <section class="final-cta" id="quote">
       <div class="wrap rv">
         <h2>만들 사이트 한 줄이면 됩니다. 5분 안에 1차 견적을 드립니다</h2>
         <form class="search-cta" style="margin:30px auto 0"><input placeholder="예: 인테리어 회사 홈페이지를 새로 만들고 싶어요"/><button class="go" aria-label="견적 받기">↑</button></form>
