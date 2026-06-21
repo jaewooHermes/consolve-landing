@@ -65,7 +65,7 @@ export default function QuoteChatWidget() {
         body: JSON.stringify({ text: requestText }),
       });
       const data = await response.json();
-      if (!response.ok || data.status !== "ok") {
+      if (!response.ok || !["ok", "needs_more_info"].includes(data.status)) {
         throw new Error(data.message || "견적 서버 연결에 실패했습니다.");
       }
       setResult(data);
@@ -121,7 +121,7 @@ export default function QuoteChatWidget() {
 
   const estimate = result?.estimate;
   const range = estimate?.range;
-  const nextQuestions = estimate?.nextQuestions || estimate?.next_questions || [];
+  const nextQuestions = estimate?.nextQuestions || estimate?.next_questions || result?.questions || [];
   const lineItems = estimate?.lineItems || estimate?.line_items || [];
 
   return (
@@ -164,7 +164,22 @@ export default function QuoteChatWidget() {
               <button type="button" onClick={() => setText(PRESETS.landing_page)}>랜딩페이지는 얼마부터 가능한가요?</button>
             </div>
 
-            {status === "success" && estimate && (
+            {status === "success" && result?.status === "needs_more_info" && (
+              <article className="quote-result-card">
+                <span className="quote-result-kicker">견적 정보 확인</span>
+                <h4>몇 가지만 더 알려주세요</h4>
+                <p>{result.message}</p>
+                {nextQuestions.length > 0 && (
+                  <div className="quote-next">
+                    <b>필수 확인 질문</b>
+                    <span>{nextQuestions.slice(0, 3).join(" · ")}</span>
+                  </div>
+                )}
+                <small>위 정보를 답변해주시면 기본가와 추가 기능 기준으로 1차 견적을 계산합니다.</small>
+              </article>
+            )}
+
+            {status === "success" && result?.status === "ok" && estimate && (
               <article className="quote-result-card">
                 <span className="quote-result-kicker">예상 견적</span>
                 <h4>{range ? `${formatWon(range.min)} ~ ${formatWon(range.max)}` : "견적 산정 완료"}</h4>

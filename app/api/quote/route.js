@@ -5,6 +5,9 @@ const ALLOWED_KEYS = new Set([
   "text",
   "service_type",
   "features",
+  "features_confirmed",
+  "design_status",
+  "backend_need",
   "quantity",
   "pages",
   "timeline_weeks",
@@ -38,6 +41,17 @@ function sanitizeBody(body) {
 }
 
 function normalizeQuoteResponse(upstream) {
+  if (upstream?.status === "needs_more_info") {
+    return {
+      status: "needs_more_info",
+      known: upstream.known || {},
+      missing: upstream.missing || [],
+      questions: upstream.questions || [],
+      message: upstream.answer || upstream?.discord?.content || "정확한 견적을 위해 추가 정보가 필요합니다.",
+      source: "quote-server",
+    };
+  }
+
   const estimate = upstream?.estimate ?? upstream;
   const message =
     upstream?.answer ||
