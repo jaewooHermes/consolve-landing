@@ -12,13 +12,13 @@ export function trackConsultationCta(el, extra = {}) {
 
   const params = {
     event_category: "consultation",
-    event_label: getLocation(el),
     cta_location: getLocation(el),
     cta_text: el.dataset.gaText || getText(el),
     cta_href: el.getAttribute("href") || el.getAttribute("action") || "",
     page_path: window.location.pathname,
     ...extra,
   };
+  params.event_label = params.cta_location;
 
   if (typeof window.gtag === "function") {
     window.gtag("event", CONSULTATION_EVENT_NAME, params);
