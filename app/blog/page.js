@@ -76,7 +76,7 @@ ${navCss}
 .grid-sec{padding:var(--space-14) 0 var(--space-20)}
 .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-8) var(--space-6)}
 .card{display:flex;flex-direction:column;cursor:pointer}
-.card .thumb{aspect-ratio:16/10;border-radius:var(--r-md);margin-bottom:var(--space-4);transition:.25s}
+.card .thumb{aspect-ratio:16/10;border-radius:var(--r-md);margin-bottom:var(--space-4);transition:.25s;width:100%;object-fit:cover;display:block}
 .card:hover .thumb{transform:translateY(-4px);box-shadow:var(--shadow)}
 .card .tag{font-size:var(--text-xs);font-weight:var(--fw-bold);color:var(--purple);margin-bottom:var(--space-2)}
 .card h3{font-size:var(--text-xl);line-height:1.4;margin:0 0 var(--space-3);font-weight:var(--fw-bold);letter-spacing:var(--ls-normal);word-break:keep-all}
@@ -146,12 +146,25 @@ const CAT_LABEL = {
   news: "뉴스룸",
 };
 
+const PROMPT_ARTICLE = {
+  cat: "tip",
+  slug: "midjourney-film-photo-prompts",
+  href: "/blog/midjourney-film-photo-prompts",
+  image: "/generated-content/midjourney-film-photo-prompts/hero.png",
+  title: "미드저니 필름 사진 프롬프트 10개",
+  excerpt:
+    "인스타그램 댓글 보상 링크로 제공하는 90년대 필름 사진 무드의 미드저니 프롬프트 모음입니다.",
+  author: "Consolve",
+  date: "2026년 6월 23일",
+};
+
 const PLACEHOLDER_ARTICLES = Array.from({ length: 6 }).map((_, i) => {
   const cats = ["case", "tip", "event", "news"];
   const cat = cats[i % cats.length];
   return {
     cat,
     slug: `article-${i + 1}`,
+    href: `/blog/articles/article-${i + 1}`,
     ph: `ph-${(i % 5) + 1}`,
     title: `아티클 제목 자리입니다 — 플레이스홀더 제목 ${i + 1}`,
     excerpt: "본문 요약이 들어갈 자리입니다. 실제 내용으로 교체하면 됩니다.",
@@ -159,6 +172,11 @@ const PLACEHOLDER_ARTICLES = Array.from({ length: 6 }).map((_, i) => {
     date: `2026년 6월 ${((i * 3) % 28) + 1}일`,
   };
 });
+
+const thumbHTML = (a) =>
+  a.image
+    ? `<img class="thumb" src="${escapeHtml(a.image)}" alt="${escapeHtml(a.title)}" loading="lazy" />`
+    : `<div class="thumb ph ${escapeHtml(a.ph)}"></div>`;
 
 function escapeHtml(value = "") {
   return String(value)
@@ -183,8 +201,8 @@ function toInsightArticle(post, index) {
 }
 
 const cardHTML = (a) => `
-  <a class="card" href="/blog/articles/${escapeHtml(a.slug)}" data-cat="${escapeHtml(a.cat)}">
-    <div class="thumb ph ${escapeHtml(a.ph)}"></div>
+  <a class="card" href="${escapeHtml(a.href || `/blog/articles/${a.slug}`)}" data-cat="${escapeHtml(a.cat)}">
+    ${thumbHTML(a)}
     <div class="tag">${escapeHtml(CAT_LABEL[a.cat] || a.cat)}</div>
     <h3>${escapeHtml(a.title)}</h3>
     <p class="excerpt">${escapeHtml(a.excerpt)}</p>
@@ -287,7 +305,7 @@ function buildBody(articles, featured) {
 export default async function BlogPage() {
   const posts = await listPublicPosts();
   const insightArticles = posts.map(toInsightArticle);
-  const articles = [...insightArticles, ...PLACEHOLDER_ARTICLES];
+  const articles = [PROMPT_ARTICLE, ...insightArticles, ...PLACEHOLDER_ARTICLES];
   const featured = insightArticles[0] || PLACEHOLDER_ARTICLES[0];
 
   return (
