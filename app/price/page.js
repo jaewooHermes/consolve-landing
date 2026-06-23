@@ -8,6 +8,7 @@
 // ▸ 디자인 조절은 아래 :root 토큰 블록만 수정하면 전체에 반영됩니다.
 
 import { useEffect, useRef } from "react";
+import { bindConsultationAnalytics } from "../components/consultationAnalytics";
 import { navCss, getNavHtml } from "../components/navHtml";
 
 const css = `
@@ -255,7 +256,7 @@ const planHTML = (p) => `
     <div class="plan-sub">${p.sub}</div>
     <div class="price" data-once="${p.once}" data-split="${p.split}">${p.once}${p.once.endsWith("만") ? '<small>원~</small>' : ""}</div>
     <div class="price-note">${p.note || ""}</div>
-    <a class="plan-cta ${p.ctaClass}" href="/#contact">${p.cta}</a>
+    <a class="plan-cta ${p.ctaClass}" href="/#contact" data-ga-consultation-cta data-ga-location="price_plan_${p.name}" data-ga-text="${p.cta}">${p.cta}</a>
     <ul class="feat">${p.feats.map((f) => `<li>${f}</li>`).join("")}</ul>
   </div>`;
 
@@ -342,7 +343,7 @@ const body = `${getNavHtml('price')}
     <div class="wrap">
       <h2>견적부터 받아보는 게 제일 빠릅니다</h2>
       <p>만들 사이트만 적어주시면 5분 안에 예상 견적과 일정을 드립니다.</p>
-      <a class="pill-dark" href="/#contact">5분 견적 받기</a>
+      <a class="pill-dark" href="/#contact" data-ga-consultation-cta data-ga-location="price_bottom_quote" data-ga-text="5분 견적 받기">5분 견적 받기</a>
       <div class="notes"><span>· 사이트가 없어도 견적 가능</span><span>· 상세 견적은 직접 발송</span><span>· 6개월 무상 보증</span></div>
     </div>
   </section>
@@ -365,6 +366,8 @@ export default function PricePage() {
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
+
+    const unbindConsultationAnalytics = bindConsultationAnalytics(root);
 
     // 결제 토글 — 1회 결제 / 3개월 분할 금액 전환
     const toggle = root.querySelector("#billToggle");
@@ -402,6 +405,7 @@ export default function PricePage() {
     }
 
     return () => {
+      unbindConsultationAnalytics();
       if (toggle && onToggle)
         Array.from(toggle.querySelectorAll("button")).forEach((b) =>
           b.removeEventListener("click", onToggle)

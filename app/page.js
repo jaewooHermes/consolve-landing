@@ -14,6 +14,7 @@
 //   - 라운드: --r-* / 색: --ink, --purple, --green ...
 
 import { useEffect, useRef } from "react";
+import { bindConsultationAnalytics } from "./components/consultationAnalytics";
 import { navCss, getNavHtml } from "./components/navHtml";
 
 const css = `
@@ -249,9 +250,9 @@ const body = `${getNavHtml(null)}
         <div>
           <h1>시스템으로 만드는, 빠르고 퀄리티 있는 웹사이트·자사몰</h1>
           <p class="hero-copy">기획·디자인·개발의 기준을 시스템으로 고정했습니다.<br/>속도와 완성도 모두 2배 이상 끌어올린 개발 외주를 만나보세요.</p>
-          <form class="search-cta" id="contact">
+          <form class="search-cta" id="contact" data-ga-consultation-cta data-ga-location="home_hero_quote_form" data-ga-text="hero_quote_form_submit">
             <input placeholder="예: 러닝 브랜드 자사몰을 리뉴얼하고 싶어요" />
-            <button class="go" aria-label="견적 받기">↑</button>
+            <button class="go" aria-label="견적 받기" data-ga-consultation-cta data-ga-location="home_hero_quote_button" data-ga-text="견적 받기">↑</button>
           </form>
           <div class="chips"><span>요청사항을 입력하고 5분 내로 견적을 받아보세요</span><span class="chip">러닝 브랜드</span><span class="chip">시공사</span><span class="chip">플랫폼</span></div>
         </div>
@@ -476,7 +477,7 @@ const body = `${getNavHtml(null)}
     <section class="final-cta">
       <div class="wrap rv">
         <h2>만들 사이트 한 줄이면 됩니다. 5분 안에 1차 견적을 드립니다</h2>
-        <form class="search-cta" style="margin:30px auto 0"><input placeholder="예: 인테리어 회사 홈페이지를 새로 만들고 싶어요"/><button class="go" aria-label="견적 받기">↑</button></form>
+        <form class="search-cta" style="margin:30px auto 0" data-ga-consultation-cta data-ga-location="home_final_quote_form" data-ga-text="final_quote_form_submit"><input placeholder="예: 인테리어 회사 홈페이지를 새로 만들고 싶어요"/><button class="go" aria-label="견적 받기" data-ga-consultation-cta data-ga-location="home_final_quote_button" data-ga-text="견적 받기">↑</button></form>
         <div class="chips" style="justify-content:center"><span>요청사항을 입력하고 5분 내로 견적을 받아보세요</span><span class="chip">러닝 브랜드</span><span class="chip">시공사</span><span class="chip">플랫폼</span></div>
       </div>
     </section>
@@ -500,6 +501,8 @@ export default function HomePage() {
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
+
+    const unbindConsultationAnalytics = bindConsultationAnalytics(root);
 
     const reduce =
       window.matchMedia &&
@@ -731,6 +734,7 @@ export default function HomePage() {
     }
 
     return () => {
+      unbindConsultationAnalytics();
       chartIO?.disconnect();
       kboardIO?.disconnect();
       clearKboardTimers();
