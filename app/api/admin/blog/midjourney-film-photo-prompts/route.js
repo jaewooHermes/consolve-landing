@@ -1,189 +1,23 @@
 const OWNER = "jaewooHermes";
 const REPO = "consolve-landing";
 const BRANCH = "main";
-const ARTICLE_PATH = "app/blog/midjourney-film-photo-prompts/page.js";
+const CONTENT_PATH = "app/blog/midjourney-film-photo-prompts/content.js";
 const BLOG_INDEX_PATH = "app/blog/page.js";
-
-function json(data, status = 200) {
-  return Response.json(data, {
-    status,
-    headers: { "Cache-Control": "no-store" },
-  });
-}
-
-function cleanString(value, maxLength) {
-  return String(value || "").trim().replace(/\s+/g, " ").slice(0, maxLength);
-}
-
-function validatePayload(body) {
-  const title = cleanString(body.title, 80);
-  const description = cleanString(body.description, 220);
-  const lead = cleanString(body.lead, 260);
-  const excerpt = cleanString(body.excerpt, 180);
-
-  if (!title) throw new Error("제목을 입력해 주세요.");
-  if (!description) throw new Error("SEO 설명을 입력해 주세요.");
-  if (!lead) throw new Error("상단 리드 문장을 입력해 주세요.");
-  if (!excerpt) throw new Error("블로그 목록 요약을 입력해 주세요.");
-
-  return { title, description, lead, excerpt };
-}
-
-function escapeForDoubleQuotedJs(value) {
-  return value
-    .replace(/\\/g, "\\\\")
-    .replace(/"/g, '\\"')
-    .replace(/\r?\n/g, "\\n");
-}
-
-function replaceOnce(source, pattern, replacement, label) {
-  const next = source.replace(pattern, replacement);
-  if (next === source) {
-    throw new Error(`${label} 위치를 찾지 못했습니다.`);
-  }
-  return next;
-}
-
-function updateArticleSource(source, fields) {
-  const title = escapeForDoubleQuotedJs(fields.title);
-  const description = escapeForDoubleQuotedJs(fields.description);
-  const lead = escapeForDoubleQuotedJs(fields.lead);
-
-  let next = source;
-  next = replaceOnce(
-    next,
-    /title:\s*"[^"]*\| Consolve 블로그"/,
-    `title: "${title} | Consolve 블로그"`,
-    "metadata title"
-  );
-  next = replaceOnce(
-    next,
-    /description:\s*"[^"]*"/,
-    `description: "${description}"`,
-    "metadata description"
-  );
-  next = replaceOnce(
-    next,
-    /<h1>[^<]*<\/h1>/,
-    `<h1>${title}</h1>`,
-    "H1"
-  );
-  next = replaceOnce(
-    next,
-    /<p className="lead">[\s\S]*?<\/p>/,
-    `<p className="lead">${lead}</p>`,
-    "lead"
-  );
-  return next;
-}
-
-function updateBlogIndexSource(source, fields) {
-  const title = escapeForDoubleQuotedJs(fields.title);
-  const excerpt = escapeForDoubleQuotedJs(fields.excerpt);
-
-  let next = source;
-  next = replaceOnce(
-    next,
-    /title:\s*"[^"]*",\n\s*excerpt:\n\s*"[^"]*",/,
-    `title: "${title}",\n  excerpt:\n    "${excerpt}",`,
-    "blog card title/excerpt"
-  );
-  return next;
-}
-
-function token() {
-  return process.env.GITHUB_TOKEN_ORG || process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
-}
-
-async function githubRequest(path, options = {}) {
-  const authToken = token();
-  if (!authToken) {
-    const err = new Error("서버 환경에 GitHub 토큰이 없어 저장할 수 없습니다.");
-    err.status = 503;
-    throw err;
-  }
-
-  const response = await fetch(`https://api.github.com${path}`, {
-    ...options,
-    headers: {
-      Accept: "application/vnd.github+json",
-      Authorization: `Bearer ${authToken}`,
-      "X-GitHub-Api-Version": "2022-11-28",
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-  });
-
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const err = new Error(data.message || `GitHub API 오류: ${response.status}`);
-    err.status = response.status;
-    throw err;
-  }
-  return data;
-}
-
-function decodeBase64(value) {
-  return Buffer.from(value || "", "base64").toString("utf8");
-}
-
-function encodeBase64(value) {
-  return Buffer.from(value, "utf8").toString("base64");
-}
-
-async function getFile(filePath) {
-  const data = await githubRequest(`/repos/${OWNER}/${REPO}/contents/${filePath}?ref=${BRANCH}`);
-  return {
-    sha: data.sha,
-    content: decodeBase64(data.content),
-  };
-}
-
-async function updateFile(filePath, sha, content, message) {
-  return githubRequest(`/repos/${OWNER}/${REPO}/contents/${filePath}`, {
-    method: "PUT",
-    body: JSON.stringify({
-      message,
-      content: encodeBase64(content),
-      sha,
-      branch: BRANCH,
-    }),
-  });
-}
-
-export async function POST(request) {
-  try {
-    const fields = validatePayload(await request.json());
-    const [articleFile, blogIndexFile] = await Promise.all([
-      getFile(ARTICLE_PATH),
-      getFile(BLOG_INDEX_PATH),
-    ]);
-
-    const articleContent = updateArticleSource(articleFile.content, fields);
-    const blogIndexContent = updateBlogIndexSource(blogIndexFile.content, fields);
-
-    if (articleContent === articleFile.content && blogIndexContent === blogIndexFile.content) {
-      return json({ ok: true, unchanged: true });
-    }
-
-    const message = `chore: update blog article copy`;
-    const articleUpdate = await updateFile(ARTICLE_PATH, articleFile.sha, articleContent, message);
-    const blogIndexLatest = await getFile(BLOG_INDEX_PATH);
-    const latestBlogIndexContent = updateBlogIndexSource(blogIndexLatest.content, fields);
-    const indexUpdate = await updateFile(BLOG_INDEX_PATH, blogIndexLatest.sha, latestBlogIndexContent, message);
-
-    return json({
-      ok: true,
-      commit: indexUpdate.commit?.sha || articleUpdate.commit?.sha || null,
-      files: [ARTICLE_PATH, BLOG_INDEX_PATH],
-    });
-  } catch (error) {
-    return json(
-      {
-        ok: false,
-        error: error.message || "저장 중 오류가 발생했습니다.",
-      },
-      error.status || 400
-    );
-  }
-}
+function json(data, status = 200) { return Response.json(data, { status, headers: { "Cache-Control": "no-store" } }); }
+function cleanString(value, maxLength) { return String(value || "").trim().replace(/\s+/g, " ").slice(0, maxLength); }
+function assertString(value, label, maxLength = 5000) { if (typeof value !== "string" || !value.trim()) throw new Error(`${label}을(를) 입력해 주세요.`); if (value.length > maxLength) throw new Error(`${label}은(는) ${maxLength}자 이하여야 합니다.`); return value.trim(); }
+function assertStringArray(value, label, maxItems = 30) { if (!Array.isArray(value)) throw new Error(`${label}은(는) 배열이어야 합니다.`); if (value.length > maxItems) throw new Error(`${label} 항목이 너무 많습니다.`); return value.map((item, index) => assertString(item, `${label} ${index + 1}`, 5000)); }
+function validateOptions(value) { if (!Array.isArray(value) || value.length < 1) throw new Error("options는 1개 이상의 행이 필요합니다."); if (value.length > 20) throw new Error("options 행이 너무 많습니다."); return value.map((row, rowIndex) => { if (!Array.isArray(row) || row.length < 2 || row.length > 4) throw new Error(`options ${rowIndex + 1}행 형식이 올바르지 않습니다.`); return row.map((cell, cellIndex) => assertString(cell, `options ${rowIndex + 1}-${cellIndex + 1}`, 1000)); }); }
+function validatePromptItems(value) { if (!Array.isArray(value) || value.length < 1) throw new Error("promptItems는 1개 이상 필요합니다."); if (value.length > 30) throw new Error("promptItems 항목이 너무 많습니다."); return value.map((item, index) => ({ title: assertString(item?.title, `프롬프트 ${index + 1} 제목`, 200), description: assertString(item?.description, `프롬프트 ${index + 1} 설명`, 1000), prompt: assertString(item?.prompt, `프롬프트 ${index + 1} 문장`, 4000), imageBase: assertString(item?.imageBase, `프롬프트 ${index + 1} 이미지 베이스`, 120).replace(/[^a-z0-9-]/gi, "") })); }
+function validateArticle(raw) { const source = raw?.article || raw; if (!source || typeof source !== "object" || Array.isArray(source)) throw new Error("article JSON 객체가 필요합니다."); return { slug: "midjourney-film-photo-prompts", title: assertString(source.title, "제목", 100), seoDescription: assertString(source.seoDescription || source.description, "SEO 설명", 320), lead: assertString(source.lead, "상단 리드", 400), excerpt: assertString(source.excerpt, "목록 요약", 240), eyebrow: cleanString(source.eyebrow || "프롬프트 모음", 60), author: cleanString(source.author || "Consolve", 80), date: cleanString(source.date || "2026년 6월 23일", 60), heroLabel: cleanString(source.heroLabel || "블로그 대표 이미지", 160), introParagraphs: assertStringArray(source.introParagraphs, "introParagraphs", 20), note: source.note ? assertString(source.note, "note", 2000) : "", optionsTitle: assertString(source.optionsTitle || "추천 사용 옵션", "옵션 제목", 120), options: validateOptions(source.options), promptsTitle: assertString(source.promptsTitle || "프롬프트", "프롬프트 섹션 제목", 120), promptItems: validatePromptItems(source.promptItems), howToTitle: assertString(source.howToTitle || "활용 방법", "활용 방법 제목", 120), howToIntro: assertString(source.howToIntro || "", "활용 방법 설명", 1000), howToItems: assertStringArray(source.howToItems, "howToItems", 20), examplePrompt: assertString(source.examplePrompt, "예시 프롬프트", 4000), checklistTitle: assertString(source.checklistTitle || "체크리스트", "체크리스트 제목", 120), checklist: assertStringArray(source.checklist, "checklist", 30), outro: assertString(source.outro, "마무리 문단", 2000) }; }
+function serializeContent(article) { return `export const ARTICLE_CONTENT = ${JSON.stringify(article, null, 2)};\n`; }
+function escapeForDoubleQuotedJs(value) { return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\r?\n/g, "\\n"); }
+function replaceOnce(source, pattern, replacement, label) { const next = source.replace(pattern, replacement); if (next === source) throw new Error(`${label} 위치를 찾지 못했습니다.`); return next; }
+function updateBlogIndexSource(source, article) { const title = escapeForDoubleQuotedJs(article.title); const excerpt = escapeForDoubleQuotedJs(article.excerpt); return replaceOnce(source, /title:\s*"[^"]*",\n\s*excerpt:\n\s*"[^"]*",/, `title: "${title}",\n  excerpt:\n    "${excerpt}",`, "blog card title/excerpt"); }
+function token() { return process.env.GITHUB_TOKEN_ORG || process.env.GITHUB_TOKEN || process.env.GH_TOKEN || ""; }
+async function githubRequest(path, options = {}) { const authToken = token(); if (!authToken) { const err = new Error("서버 환경에 GitHub 토큰이 없어 저장할 수 없습니다."); err.status = 503; throw err; } const response = await fetch(`https://api.github.com${path}`, { ...options, headers: { Accept: "application/vnd.github+json", Authorization: `Bearer ${authToken}`, "X-GitHub-Api-Version": "2022-11-28", "Content-Type": "application/json", ...(options.headers || {}) } }); const data = await response.json().catch(() => ({})); if (!response.ok) { const err = new Error(data.message || `GitHub API 오류: ${response.status}`); err.status = response.status; throw err; } return data; }
+function decodeBase64(value) { return Buffer.from(value || "", "base64").toString("utf8"); }
+function encodeBase64(value) { return Buffer.from(value, "utf8").toString("base64"); }
+async function getFile(filePath) { const data = await githubRequest(`/repos/${OWNER}/${REPO}/contents/${filePath}?ref=${BRANCH}`); return { sha: data.sha, content: decodeBase64(data.content) }; }
+async function updateFile(filePath, sha, content, message) { return githubRequest(`/repos/${OWNER}/${REPO}/contents/${filePath}`, { method: "PUT", body: JSON.stringify({ message, content: encodeBase64(content), sha, branch: BRANCH }) }); }
+export async function POST(request) { try { const article = validateArticle(await request.json()); const [contentFile, blogIndexFile] = await Promise.all([getFile(CONTENT_PATH), getFile(BLOG_INDEX_PATH)]); const contentJs = serializeContent(article); const blogIndexContent = updateBlogIndexSource(blogIndexFile.content, article); if (contentJs === contentFile.content && blogIndexContent === blogIndexFile.content) return json({ ok: true, unchanged: true, files: [CONTENT_PATH, BLOG_INDEX_PATH] }); const message = "chore: update full blog article content"; const contentUpdate = contentJs === contentFile.content ? null : await updateFile(CONTENT_PATH, contentFile.sha, contentJs, message); const blogIndexLatest = await getFile(BLOG_INDEX_PATH); const latestBlogIndexContent = updateBlogIndexSource(blogIndexLatest.content, article); const indexUpdate = latestBlogIndexContent === blogIndexLatest.content ? null : await updateFile(BLOG_INDEX_PATH, blogIndexLatest.sha, latestBlogIndexContent, message); return json({ ok: true, commit: indexUpdate?.commit?.sha || contentUpdate?.commit?.sha || null, files: [CONTENT_PATH, BLOG_INDEX_PATH] }); } catch (error) { return json({ ok: false, error: error.message || "저장 중 오류가 발생했습니다." }, error.status || 400); } }
