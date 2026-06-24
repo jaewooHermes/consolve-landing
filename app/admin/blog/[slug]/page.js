@@ -33,7 +33,7 @@ export default async function EditBlogPostPage({ params }) {
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <main className="wrap">
         <div className="top"><div><span className="badge">Admin only · DB JSON</span><h1>블로그 JSON 수정</h1><p className="muted">모든 블로그 콘텐츠는 DB posts.payload JSON으로 저장됩니다. 저장하면 GitHub 커밋 없이 DB에 즉시 반영됩니다.</p></div><a className="back" href={slug === "midjourney-film-photo-prompts" ? "/blog/midjourney-film-photo-prompts" : `/blog/articles/${slug}`}>글 보기 →</a></div>
-        <section className="card"><form id="editForm"><div className="fields">
+        <section className="card"><form id="editForm" method="post" action={`/api/admin/blog/${encodeURIComponent(slug)}`}><div className="fields">
           <div className="quick"><div><label htmlFor="title">제목</label><input id="title" name="title" defaultValue={post.title} required maxLength={160} /></div><div><label htmlFor="status">상태</label><select id="status" name="status" defaultValue={post.status || "draft"}><option value="draft">draft</option><option value="review">review</option><option value="published">published</option><option value="archived">archived</option></select></div></div>
           <div className="quick"><div><label htmlFor="category">카테고리</label><input id="category" name="category" defaultValue={post.category || "insight"} maxLength={80} /></div><div><label htmlFor="author">작성자</label><input id="author" name="author" defaultValue={post.author || "Consolve"} maxLength={80} /></div></div>
           <label htmlFor="excerpt">블로그 목록 요약</label><textarea id="excerpt" name="excerpt" defaultValue={post.excerpt || ""} required maxLength={500} />
