@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { getPostBySlugForAdmin, upsertPostPayload } from "../../../../../lib/cms";
 import { promptArticleToPostPayload, PROMPT_ARTICLE_SLUG } from "../../../../../lib/prompt-article-adapter";
 import { ARTICLE_CONTENT } from "../../../../blog/midjourney-film-photo-prompts/content";
@@ -44,12 +45,27 @@ async function parseRequestBody(request) {
   return request.json();
 }
 
+function wantsHtml(request) {
+  const accept = request.headers.get("accept") || "";
+  const contentType = request.headers.get("content-type") || "";
+  return !contentType.includes("application/json") && accept.includes("text/html");
+}
+
+function redirectToEditor(request, params = {}) {
+  const url = new URL(`/admin/blog/${PROMPT_ARTICLE_SLUG}`, request.url);
+  Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, String(value)));
+  return NextResponse.redirect(url, { status: 303 });
+}
+
 export async function POST(request) {
   try {
+    const htmlSubmit = wantsHtml(request);
     const body = await parseRequestBody(request);
     const post = await upsertPostPayload(body, { slug: PROMPT_ARTICLE_SLUG, actor: "admin" });
+    if (htmlSubmit) return redirectToEditor(request, { saved: "1" });
     return json({ ok: true, slug: post.slug, updatedAt: post.updatedAt, files: [], storage: "db-json" });
   } catch (error) {
+    if (wantsHtml(request)) return redirectToEditor(request, { error: error.message || "저장 중 오류가 발생했습니다." });
     return json({ ok: false, error: error.message || "저장 중 오류가 발생했습니다." }, error.status || 400);
   }
 }
