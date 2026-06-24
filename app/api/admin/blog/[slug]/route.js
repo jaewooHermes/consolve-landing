@@ -29,6 +29,7 @@ function parseFormPost(formData, slug) {
   payload.category = String(formData.get("category") || payload.category || "insight").trim() || "insight";
   payload.author = String(formData.get("author") || payload.author || "Consolve").trim() || "Consolve";
   payload.excerpt = String(formData.get("excerpt") || payload.excerpt || "").trim();
+  payload.lead = String(formData.get("lead") || payload.lead || payload.excerpt || "").trim();
   payload.seoDescription = String(formData.get("description") || payload.seoDescription || payload.metaDescription || payload.excerpt || "").trim();
   if (payload.status === "published" && !payload.publishedAt) payload.publishedAt = new Date().toISOString();
   return { payload };
