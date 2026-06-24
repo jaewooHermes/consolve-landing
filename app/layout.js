@@ -1,5 +1,4 @@
 import "./globals.css";
-import QuoteChatWidget from "./components/QuoteChatWidget";
 
 export const metadata = {
   title: "Visible Dev — 시스템으로 빠르고 퀄리티 있는 웹·자사몰 개발",
@@ -30,7 +29,6 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         {children}
-        <QuoteChatWidget />
       </body>
     </html>
   );

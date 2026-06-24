@@ -54,6 +54,13 @@ export function proxy(request) {
   if (!isAuthorized(request)) return unauthorized();
   const response = NextResponse.next();
   response.headers.set("Cache-Control", "no-store");
+  response.cookies.set("consolve_admin", "1", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: request.nextUrl.protocol === "https:",
+    path: "/",
+    maxAge: 60 * 60 * 8,
+  });
   return response;
 }
 
