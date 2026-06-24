@@ -1,24 +1,25 @@
 import { getPostBySlugForAdmin, upsertPostPayload } from "../../../../../lib/cms";
-import { promptArticleToPostPayload, PROMPT_ARTICLE_SLUG } from "../../../../../lib/prompt-article-adapter";
-import { ARTICLE_CONTENT } from "../../../../blog/midjourney-film-photo-prompts/content";
 
 function json(data, status = 200) {
   return Response.json(data, { status, headers: { "Cache-Control": "no-store" } });
 }
 
-export async function GET() {
+export async function GET(_request, { params }) {
   try {
-    const post = (await getPostBySlugForAdmin(PROMPT_ARTICLE_SLUG)) || promptArticleToPostPayload(ARTICLE_CONTENT);
-    return json({ ok: true, post, fallback: !post.updatedAt });
+    const { slug } = await params;
+    const post = await getPostBySlugForAdmin(slug);
+    if (!post) return json({ ok: false, error: "글을 찾지 못했습니다." }, 404);
+    return json({ ok: true, post });
   } catch (error) {
     return json({ ok: false, error: error.message || "글을 불러오지 못했습니다." }, error.status || 400);
   }
 }
 
-export async function POST(request) {
+export async function POST(request, { params }) {
   try {
+    const { slug } = await params;
     const body = await request.json();
-    const post = await upsertPostPayload(body, { slug: PROMPT_ARTICLE_SLUG, actor: "admin" });
+    const post = await upsertPostPayload(body, { slug, actor: "admin" });
     return json({ ok: true, slug: post.slug, updatedAt: post.updatedAt, files: [], storage: "db-json" });
   } catch (error) {
     return json({ ok: false, error: error.message || "저장 중 오류가 발생했습니다." }, error.status || 400);

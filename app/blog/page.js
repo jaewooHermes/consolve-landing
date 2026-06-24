@@ -1,6 +1,7 @@
 import { navCss, getNavHtml } from "../components/navHtml";
 import { formatDate, getPostAuthor, listPublicPosts } from "../../lib/cms";
 import { ARTICLE_CONTENT } from "./midjourney-film-photo-prompts/content";
+import { promptArticleToPostPayload, PROMPT_ARTICLE_SLUG } from "../../lib/prompt-article-adapter";
 
 export const dynamic = "force-dynamic";
 
@@ -147,15 +148,17 @@ const CAT_LABEL = {
   news: "뉴스룸",
 };
 
+const PROMPT_FALLBACK_ARTICLE = promptArticleToPostPayload(ARTICLE_CONTENT);
+
 const PROMPT_ARTICLE = {
   cat: "tip",
-  slug: ARTICLE_CONTENT.slug,
+  slug: PROMPT_FALLBACK_ARTICLE.slug,
   href: "/blog/midjourney-film-photo-prompts",
   ph: "ph-5",
-  title: ARTICLE_CONTENT.title,
-  excerpt: ARTICLE_CONTENT.excerpt,
-  author: ARTICLE_CONTENT.author,
-  date: ARTICLE_CONTENT.date,
+  title: PROMPT_FALLBACK_ARTICLE.title,
+  excerpt: PROMPT_FALLBACK_ARTICLE.excerpt,
+  author: PROMPT_FALLBACK_ARTICLE.author,
+  date: PROMPT_FALLBACK_ARTICLE.date,
 };
 
 const PLACEHOLDER_ARTICLES = Array.from({ length: 6 }).map((_, i) => {
@@ -188,14 +191,16 @@ function escapeHtml(value = "") {
 }
 
 function toInsightArticle(post, index) {
+  const isPromptArticle = post.slug === PROMPT_ARTICLE_SLUG;
   return {
-    cat: "insight",
+    cat: post.category || (isPromptArticle ? "tip" : "insight"),
     slug: post.slug,
+    href: isPromptArticle ? "/blog/midjourney-film-photo-prompts" : `/blog/articles/${post.slug}`,
     ph: `ph-${(index % 5) + 1}`,
     title: post.title,
     excerpt: post.excerpt || post.metaDescription || post.coreMessage || "비즈니스 운영과 검색 유입 개선에 필요한 실무 인사이트입니다.",
     author: getPostAuthor(post),
-    date: formatDate(post.publishedAt || post.updatedAt),
+    date: post.date || formatDate(post.publishedAt || post.updatedAt),
     real: true,
   };
 }
@@ -304,9 +309,10 @@ function buildBody(articles, featured) {
 
 export default async function BlogPage() {
   const posts = await listPublicPosts();
-  const insightArticles = posts.map(toInsightArticle);
-  const articles = [PROMPT_ARTICLE, ...insightArticles, ...PLACEHOLDER_ARTICLES];
-  const featured = insightArticles[0] || PLACEHOLDER_ARTICLES[0];
+  const dbArticles = posts.map(toInsightArticle);
+  const hasPromptArticle = dbArticles.some((article) => article.slug === PROMPT_ARTICLE_SLUG);
+  const articles = [...(hasPromptArticle ? [] : [PROMPT_ARTICLE]), ...dbArticles, ...PLACEHOLDER_ARTICLES];
+  const featured = dbArticles.find((article) => article.slug !== PROMPT_ARTICLE_SLUG) || PLACEHOLDER_ARTICLES[0];
 
   return (
     <div>
