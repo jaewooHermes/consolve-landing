@@ -7,7 +7,7 @@ export const ARTICLE_CONTENT = {
   "eyebrow": "프롬프트 모음",
   "author": "Consolve",
   "date": "2026년 6월 23일",
-  "heroLabel": "미드저니 필름 사진 프롬프트 대표 그라데이션 이미지 저장 테스트",
+  "heroLabel": "미드저니 필름 사진 프롬프트 대표 그라데이션 이미지",
   "introParagraphs": [
     "각 프롬프트는 그대로 복사해서 사용할 수 있고, 필요하면 주인공·장소·시간대만 바꿔도 비슷한 톤의 이미지를 만들 수 있습니다. 결과를 더 안정적으로 맞추고 싶다면 마지막에 `--ar 4:5 --style raw --v 7 --stylize 200 --profile 1hmpcaj` 같은 비율과 버전 옵션을 붙여 사용하세요."
   ],
