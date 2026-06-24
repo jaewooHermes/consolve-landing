@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 const css = `
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Ancizar+Serif:wght@500;600;700&display=swap');
 
 :root{
   --ink:#0a0b0b;
@@ -57,7 +57,7 @@ ${navCss}
 
 /* ── Featured 히어로 ── */
 .featured{display:grid;grid-template-columns:1.15fr 1fr;gap:var(--space-12);align-items:center;padding-bottom:var(--space-16);border-bottom:1px solid var(--line)}
-.featured .thumb{aspect-ratio:16/10;border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.featured .thumb{aspect-ratio:16/10;border-radius:var(--r-lg);box-shadow:var(--shadow);position:relative;overflow:hidden;display:grid;place-items:center}
 .featured .tag{display:inline-block;font-size:var(--text-xs);font-weight:var(--fw-bold);color:var(--purple);background:#efeefe;border-radius:var(--r-pill);padding:6px 12px;margin-bottom:var(--space-4)}
 .featured h2{font-size:var(--text-3xl);line-height:1.35;margin:0 0 var(--space-4);font-weight:var(--fw-bold);letter-spacing:var(--ls-snug);word-break:keep-all}
 .featured .excerpt{font-size:var(--text-lg);color:#5a606b;line-height:var(--lh-body);margin:0 0 var(--space-6)}
@@ -78,7 +78,7 @@ ${navCss}
 .grid-sec{padding:var(--space-14) 0 var(--space-20)}
 .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-8) var(--space-6)}
 .card{display:flex;flex-direction:column;cursor:pointer}
-.card .thumb{aspect-ratio:16/10;border-radius:var(--r-md);margin-bottom:var(--space-4);transition:.25s;width:100%;object-fit:cover;display:block}
+.card .thumb{aspect-ratio:16/10;border-radius:var(--r-md);margin-bottom:var(--space-4);transition:.25s;width:100%;object-fit:cover;display:grid;place-items:center;position:relative;overflow:hidden}
 .card:hover .thumb{transform:translateY(-4px);box-shadow:var(--shadow)}
 .card .tag{font-size:var(--text-xs);font-weight:var(--fw-bold);color:var(--purple);margin-bottom:var(--space-2)}
 .card h3{font-size:var(--text-xl);line-height:1.4;margin:0 0 var(--space-3);font-weight:var(--fw-bold);letter-spacing:var(--ls-normal);word-break:keep-all}
@@ -94,6 +94,8 @@ ${navCss}
 .ph-3{background:linear-gradient(135deg,#ffd7ea,#ffe6cf)}
 .ph-4{background:linear-gradient(135deg,#d9ebe6,#b9ead6)}
 .ph-5{background:linear-gradient(135deg,#e6e3ff,#cfe0ff)}
+.prompt-thumb{background:radial-gradient(circle at 20% 18%,rgba(255,255,255,.72) 0 11%,transparent 32%),radial-gradient(circle at 80% 28%,rgba(255,215,234,.66) 0 16%,transparent 38%),radial-gradient(circle at 52% 82%,rgba(207,224,255,.82) 0 22%,transparent 48%),linear-gradient(135deg,#e6e3ff 0%,#cfe0ff 48%,#ffd7ea 100%)}
+.prompt-thumb-label{position:relative;z-index:1;font-family:"Ancizar Serif",Georgia,serif;font-size:clamp(24px,3.2vw,46px);font-weight:700;letter-spacing:.055em;color:#17131f;text-align:center;text-transform:uppercase;text-shadow:0 1px 0 rgba(255,255,255,.45)}
 .ava-ph{background:linear-gradient(135deg,#ffd7c0,#b9ead6)}
 
 /* 더보기 */
@@ -176,10 +178,14 @@ const PLACEHOLDER_ARTICLES = Array.from({ length: 6 }).map((_, i) => {
   };
 });
 
-const thumbHTML = (a) =>
-  a.image
+const thumbHTML = (a) => {
+  if (a.slug === PROMPT_ARTICLE_SLUG) {
+    return `<div class="thumb ph prompt-thumb" role="img" aria-label="MIDJOURNEY PROMPT"><span class="prompt-thumb-label">MIDJOURNEY PROMPT</span></div>`;
+  }
+  return a.image
     ? `<img class="thumb" src="${escapeHtml(a.image)}" alt="${escapeHtml(a.title)}" loading="lazy" />`
     : `<div class="thumb ph ${escapeHtml(a.ph)}"></div>`;
+};
 
 function escapeHtml(value = "") {
   return String(value)
@@ -201,7 +207,7 @@ function toInsightArticle(post, index) {
     excerpt: post.excerpt || post.metaDescription || post.coreMessage || "비즈니스 운영과 검색 유입 개선에 필요한 실무 인사이트입니다.",
     author: getPostAuthor(post),
     date: post.date || formatDate(post.publishedAt || post.updatedAt),
-    image: post.hero?.image || post.hero?.src || "",
+    image: isPromptArticle ? "" : post.hero?.image || post.hero?.src || "",
     real: true,
   };
 }
