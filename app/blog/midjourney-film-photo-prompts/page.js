@@ -9,7 +9,7 @@ ${navCss}
 `;
 
 export const metadata = {
-  title: "미드저니 필름 사진 프롬프트 10개 | Consolve 블로그",
+  title: "감성 넘치는 이미지 프롬프트 10선 | Consolve 블로그",
   description: "90년대 필름, 교외의 무드, 빈티지 인물 사진, 창가 정물 콘셉트를 바로 복사해 사용할 수 있는 미드저니 필름 사진 프롬프트 모음입니다.",
 };
 
@@ -33,7 +33,7 @@ export default function MidjourneyFilmPhotoPromptsPage() {
       <div dangerouslySetInnerHTML={{ __html: getNavHtml("blog") }} />
       <main className="article-wrap">
         <span className="eyebrow">프롬프트 모음</span>
-        <h1>미드저니 필름 사진 프롬프트 10개</h1>
+        <h1>감성 넘치는 이미지 프롬프트 10선</h1>
         <p className="lead">90년대 필름 사진, 교외의 쓸쓸한 분위기, 빈티지 헤드폰과 워크맨, 흐린 숲과 창가 정물 같은 이미지를 만들기 위한 미드저니용 문장입니다.</p>
         <div className="meta"><b>Consolve</b><span>·</span><span>2026년 6월 23일</span></div>
         <div className="hero" role="img" aria-label="미드저니 필름 사진 프롬프트 대표 그라데이션 이미지" />

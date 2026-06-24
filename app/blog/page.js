@@ -151,7 +151,7 @@ const PROMPT_ARTICLE = {
   slug: "midjourney-film-photo-prompts",
   href: "/blog/midjourney-film-photo-prompts",
   ph: "ph-5",
-  title: "미드저니 필름 사진 프롬프트 10개",
+  title: "감성 넘치는 이미지 프롬프트 10선",
   excerpt:
     "90년대 필름 사진 무드의 미드저니 프롬프트를 바로 복사해 쓸 수 있게 정리했습니다.",
   author: "Consolve",
