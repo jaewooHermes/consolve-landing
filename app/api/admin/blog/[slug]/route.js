@@ -29,6 +29,16 @@ function parseFormPost(formData, slug) {
   payload.status = String(formData.get("status") || payload.status || "draft");
   payload.category = String(formData.get("category") || payload.category || "insight").trim() || "insight";
   payload.author = String(formData.get("author") || payload.author || "Consolve").trim() || "Consolve";
+  payload.writer = payload.author;
+  payload.date = String(formData.get("date") || payload.date || "").trim();
+  payload.eyebrow = String(formData.get("eyebrow") || payload.eyebrow || "").trim();
+  payload.targetKeyword = String(formData.get("targetKeyword") || payload.targetKeyword || "").trim() || null;
+  const heroImage = String(formData.get("heroImage") || payload.hero?.image || payload.hero?.src || "").trim();
+  const heroAlt = String(formData.get("heroAlt") || payload.hero?.alt || payload.heroLabel || "").trim();
+  payload.hero = { ...(payload.hero || {}) };
+  if (heroImage) payload.hero.image = heroImage;
+  else delete payload.hero.image;
+  if (heroAlt) payload.hero.alt = heroAlt;
   payload.excerpt = String(formData.get("excerpt") || payload.excerpt || "").trim();
   payload.lead = String(formData.get("lead") || payload.lead || payload.excerpt || "").trim();
   payload.seoDescription = String(formData.get("description") || payload.seoDescription || payload.metaDescription || payload.excerpt || "").trim();

@@ -201,6 +201,7 @@ function toInsightArticle(post, index) {
     excerpt: post.excerpt || post.metaDescription || post.coreMessage || "비즈니스 운영과 검색 유입 개선에 필요한 실무 인사이트입니다.",
     author: getPostAuthor(post),
     date: post.date || formatDate(post.publishedAt || post.updatedAt),
+    image: post.hero?.image || post.hero?.src || "",
     real: true,
   };
 }
