@@ -30,7 +30,7 @@ export default function MidjourneyFilmPhotoPromptsPage() {
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <div dangerouslySetInnerHTML={{ __html: getNavHtml("blog") }} />
       <a className="admin-edit" href="/admin/blog/midjourney-film-photo-prompts" rel="nofollow">수정</a>
-      <main className="article-wrap">
+      <main className="article-wrap" data-content-source="editable-json">
         <span className="eyebrow">{article.eyebrow}</span>
         <h1>{article.title}</h1>
         <p className="lead">{article.lead}</p>
