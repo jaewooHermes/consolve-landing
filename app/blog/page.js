@@ -150,10 +150,10 @@ const PROMPT_ARTICLE = {
   cat: "tip",
   slug: "midjourney-film-photo-prompts",
   href: "/blog/midjourney-film-photo-prompts",
-  image: "/generated-content/midjourney-film-photo-prompts/hero.png",
+  ph: "ph-5",
   title: "미드저니 필름 사진 프롬프트 10개",
   excerpt:
-    "인스타그램 댓글 보상 링크로 제공하는 90년대 필름 사진 무드의 미드저니 프롬프트 모음입니다.",
+    "90년대 필름 사진 무드의 미드저니 프롬프트를 바로 복사해 쓸 수 있게 정리했습니다.",
   author: "Consolve",
   date: "2026년 6월 23일",
 };
