@@ -1,5 +1,6 @@
 import { navCss, getNavHtml } from "../components/navHtml";
 import { formatDate, getPostAuthor, listPublicPosts } from "../../lib/cms";
+import { ARTICLE_CONTENT } from "./midjourney-film-photo-prompts/content";
 
 export const dynamic = "force-dynamic";
 
@@ -148,14 +149,13 @@ const CAT_LABEL = {
 
 const PROMPT_ARTICLE = {
   cat: "tip",
-  slug: "midjourney-film-photo-prompts",
+  slug: ARTICLE_CONTENT.slug,
   href: "/blog/midjourney-film-photo-prompts",
   ph: "ph-5",
-  title: "감성 넘치는 이미지 프롬프트 10선",
-  excerpt:
-    "90년대 필름 사진 무드의 미드저니 프롬프트를 바로 복사해 쓸 수 있게 정리했습니다.",
-  author: "Consolve",
-  date: "2026년 6월 23일",
+  title: ARTICLE_CONTENT.title,
+  excerpt: ARTICLE_CONTENT.excerpt,
+  author: ARTICLE_CONTENT.author,
+  date: ARTICLE_CONTENT.date,
 };
 
 const PLACEHOLDER_ARTICLES = Array.from({ length: 6 }).map((_, i) => {
