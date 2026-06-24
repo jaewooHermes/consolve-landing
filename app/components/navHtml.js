@@ -9,22 +9,17 @@ export const navCss = `
 .logo-img{height:30px;width:auto;display:block;flex:none}
 .links{display:flex;align-items:center;gap:var(--space-8,32px);color:#333740;font-size:var(--text-md,15px);font-weight:var(--fw-semibold,700)}
 .links a.cur{color:var(--purple,#5e56f0)}
-.nav-actions{display:flex;align-items:center;gap:var(--space-4,16px);font-size:var(--text-md,15px);font-weight:var(--fw-semibold,700)}
-.pill-dark{background:#111114;color:#fff;border-radius:var(--r-pill,999px);padding:11px 18px;font-weight:var(--fw-bold,850);box-shadow:0 8px 18px rgba(0,0,0,.12)}
 @media(max-width:600px){
   .nav-inner{height:60px;gap:12px}
   .nav .wrap{padding-left:16px;padding-right:16px}
   .brand{min-width:0;flex:0 1 auto}
   .logo-img{height:24px;max-width:134px;object-fit:contain}
-  .links{display:none}
-  .nav-actions{gap:10px;font-size:13px;flex:none}
-  .nav-actions>a:first-child{display:none}
-  .pill-dark{padding:9px 13px;white-space:nowrap}
+  .links{gap:20px;font-size:14px;flex:none}
 }
 @media(max-width:360px){
   .nav .wrap{padding-left:12px;padding-right:12px}
   .logo-img{height:22px;max-width:122px}
-  .pill-dark{padding:8px 11px;font-size:12px}
+  .links{gap:16px;font-size:13px}
 }
 `;
 
@@ -38,7 +33,6 @@ export function getNavHtml(current) {
         <a${cur('price')} href="/price">가격</a>
         <a${cur('blog')} href="/blog">블로그</a>
       </div>
-      <div class="nav-actions"><a>로그인</a><a class="pill-dark" href="/#contact" data-ga-consultation-cta data-ga-location="nav_quote">5분 견적 받기</a></div>
     </div>
   </nav>`;
 }
