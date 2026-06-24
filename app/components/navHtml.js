@@ -11,9 +11,11 @@ export const navCss = `
 .nav-actions{display:flex;align-items:center;gap:var(--space-4);font-size:var(--text-md);font-weight:var(--fw-semibold)}
 .pill-dark{background:#111114;color:#fff;border-radius:var(--r-pill);padding:11px 18px;font-weight:var(--fw-bold);box-shadow:0 8px 18px rgba(0,0,0,.12)}
 @media(max-width:600px){
-  .nav-inner{height:60px}
+  .nav-inner{height:60px;gap:12px}
   .nav .wrap{padding-left:16px;padding-right:16px}
+  .brand{min-width:0;flex:0 1 auto}
   .logo-img{height:24px;max-width:134px;object-fit:contain}
+  .links{display:none}
   .nav-actions{gap:10px;font-size:13px;flex:none}
   .nav-actions>a:first-child{display:none}
   .pill-dark{padding:9px 13px;white-space:nowrap}
