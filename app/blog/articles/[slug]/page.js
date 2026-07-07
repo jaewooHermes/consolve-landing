@@ -73,7 +73,7 @@ export default async function ArticlePage({ params }) {
       <aside class="toc"><h5>CONTENTS</h5>${headings.map((h) => `<a href="#${h.id}">${escapeHtml(h.title)}</a>`).join("")}</aside>
     </div>
   </article>
-  <footer class="footer"><div class="wrap footer-grid"><div><a class="brand" href="/"><img class="logo-img" src="/logo.png" alt="System Web" /></a><p style="font-size:12px;line-height:1.8;margin-top:32px;color:#9a9da5">© 2026 Visible Dev<br/>마감 안에 끝내고, 진행이 보이는 개발 외주</p></div><div><h4>기능</h4><a>진행 상황 공유</a><a>카페24 개발</a><a>랜딩페이지</a><a>자동화</a></div><div><h4>가격</h4><a>작업 범위</a><a>일정 상담</a><a>추후 개선</a></div><div><h4>블로그</h4><a>외주 일정 관리</a><a>카페24 운영</a><a>랜딩페이지 전환</a></div><div><h4>리소스</h4><a>FAQ</a><a>체크리스트</a><a>문의하기</a></div><div><h4>회사</h4><a>소개</a><a>사례</a><a>파트너</a></div></div></footer>`;
+  <footer class="footer"><div class="wrap footer-grid"><div><a class="brand" href="/"><img class="logo-img" src="/logo.png" alt="System Web" /></a><p style="font-size:12px;line-height:1.8;margin-top:32px;color:#9a9da5">© 2026 consolve · System Web<br/>시스템으로 만드는 웹사이트·자사몰</p></div><div><h4>기능</h4><a>진행 상황 공유</a><a>카페24 개발</a><a>랜딩페이지</a><a>자동화</a></div><div><h4>가격</h4><a>작업 범위</a><a>일정 상담</a><a>추후 개선</a></div><div><h4>블로그</h4><a>외주 일정 관리</a><a>카페24 운영</a><a>랜딩페이지 전환</a></div><div><h4>리소스</h4><a>FAQ</a><a>체크리스트</a><a>문의하기</a></div><div><h4>회사</h4><a>소개</a><a>사례</a><a>파트너</a></div></div></footer>`;
 
   return <div><style dangerouslySetInnerHTML={{ __html: css }} /><div dangerouslySetInnerHTML={{ __html: body }} /></div>;
 }

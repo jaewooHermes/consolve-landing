@@ -485,7 +485,7 @@ const body = `${getNavHtml(null)}
 
   <footer class="footer">
     <div class="wrap footer-grid">
-      <div><a class="brand"><img class="logo-img" src="/logo.png" alt="System Web" /></a><p style="font-size:12px;line-height:1.8;margin-top:32px;color:#9a9da5">© 2026 System Web<br/>시스템으로 만드는 웹사이트·자사몰</p></div>
+      <div><a class="brand"><img class="logo-img" src="/logo.png" alt="System Web" /></a><p style="font-size:12px;line-height:1.8;margin-top:32px;color:#9a9da5">© 2026 consolve · System Web<br/>시스템으로 만드는 웹사이트·자사몰</p></div>
       <div><h4>기능</h4><a>진행 상황 공유</a><a>카페24 개발</a><a>랜딩페이지</a><a>자동화</a></div>
       <div><h4>가격</h4><a>작업 범위</a><a>일정 상담</a><a>추후 개선</a></div>
       <div><h4>블로그</h4><a>외주 일정 관리</a><a>카페24 운영</a><a>랜딩페이지 전환</a></div>
