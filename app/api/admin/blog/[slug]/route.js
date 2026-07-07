@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPostBySlugForAdmin, upsertPostPayload } from "../../../../../lib/cms";
+import { deletePost, getPostBySlugForAdmin, upsertPostPayload } from "../../../../../lib/cms";
 
 function json(data, status = 200) {
   return Response.json(data, { status, headers: { "Cache-Control": "no-store" } });
@@ -65,6 +65,16 @@ function redirectToEditor(request, slug, params = {}) {
   const url = new URL(`/admin/blog/${encodeURIComponent(slug)}`, request.url);
   Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, String(value)));
   return NextResponse.redirect(url, { status: 303 });
+}
+
+export async function DELETE(_request, { params }) {
+  try {
+    const { slug } = await params;
+    await deletePost(slug, { actor: "admin" });
+    return json({ ok: true, slug, deleted: true });
+  } catch (error) {
+    return json({ ok: false, error: error.message || "삭제하지 못했습니다." }, error.status || 400);
+  }
 }
 
 export async function POST(request, { params }) {
