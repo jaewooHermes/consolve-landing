@@ -155,13 +155,12 @@ h2{font-size:var(--text-3xl);line-height:1.4;margin:0 0 var(--space-4);font-weig
 .case-tabs .tab-group{display:flex;align-items:center;gap:var(--space-1);background:#f1f1f3;border-radius:var(--r-pill);padding:5px}
 .case-tabs .tab-group a{padding:9px 18px;border-radius:var(--r-pill);font-size:var(--text-md);font-weight:var(--fw-semibold);color:#5a5e66;white-space:nowrap;cursor:pointer;transition:color .15s}
 .case-tabs .tab-group a.active{background:#fff;color:#111;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.case-tabs .tab-all{font-size:var(--text-md);font-weight:var(--fw-semibold);color:#8b9099;white-space:nowrap;cursor:pointer}
 .case-stage{position:relative}
 .case-track{position:relative;display:flex;gap:var(--space-4);overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none}
 .case-track::-webkit-scrollbar{display:none}
-.case-card{flex:0 0 100%;scroll-snap-align:center;position:relative;min-height:600px;border-radius:20px;overflow:hidden;color:#fff;display:flex;align-items:center;background-size:140% 140%;background-position:50% 50%}
+.case-card{flex:0 0 100%;scroll-snap-align:center;position:relative;min-height:600px;border-radius:20px;overflow:hidden;color:#fff;display:flex;align-items:center;justify-content:space-between;background-size:140% 140%;background-position:50% 50%}
 .case-card.is-active{animation:case-kb 16s ease-in-out infinite alternate}
-.case-card::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(28,24,22,.92) 0%,rgba(28,24,22,.72) 38%,rgba(28,24,22,.25) 68%,rgba(28,24,22,.05) 100%)}
+.case-card::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(28,24,22,.55) 0%,rgba(28,24,22,.28) 45%,rgba(28,24,22,0) 100%)}
 .case-1{background-image:linear-gradient(120deg,#2a2622,#4a4038 60%,#6b5d4f)}
 .case-2{background-image:linear-gradient(120deg,#1c2330,#28324a 60%,#3c4a68)}
 .case-3{background-image:linear-gradient(120deg,#241c2c,#352a44 60%,#4a3c5e)}
@@ -177,12 +176,18 @@ h2{font-size:var(--text-3xl);line-height:1.4;margin:0 0 var(--space-4);font-weig
 .case-card.is-active .case-inner>*:nth-child(5){animation-delay:.28s}
 .case-card.is-active .case-inner>*:nth-child(6){animation-delay:.34s}
 .case-brand{font-size:var(--text-2xl);font-weight:var(--fw-black);letter-spacing:.06em;margin-bottom:var(--space-8)}
-.case-stat{font-size:64px;line-height:1;font-weight:var(--fw-black);letter-spacing:var(--ls-display)}
-.case-stat small{font-size:.42em;font-weight:var(--fw-bold);margin-left:4px;vertical-align:8px}
-.case-stat-label{font-size:var(--text-lg);font-weight:var(--fw-semibold);margin:var(--space-3) 0 var(--space-7)}
+.case-title{font-size:44px;line-height:1.22;font-weight:var(--fw-black);letter-spacing:var(--ls-display);margin-bottom:var(--space-7)}
+.case-shot{position:relative;z-index:2;flex:0 0 42%;max-width:520px;margin-right:var(--space-16);border-radius:14px;overflow:hidden;background:#17181c;border:1px solid rgba(255,255,255,.14);box-shadow:0 28px 70px rgba(0,0,0,.4)}
+.case-shot-bar{display:flex;align-items:center;gap:6px;padding:11px 14px;background:#232429;border-bottom:1px solid rgba(255,255,255,.06)}
+.case-shot-bar i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.22)}
+.case-shot-bar span{margin-left:10px;flex:1;background:rgba(255,255,255,.08);border-radius:7px;padding:4px 12px;font-size:12px;line-height:1;color:rgba(255,255,255,.65);font-weight:600;letter-spacing:.02em}
+.case-shot img{display:block;width:100%;height:330px;object-fit:cover;object-position:top}
+.case-shot.is-phone{flex:0 0 auto;width:238px;border-radius:30px;padding:10px;background:#0c0d10;border:1px solid rgba(255,255,255,.18)}
+.case-shot.is-phone img{height:452px;border-radius:22px}
+.case-status{display:inline-block;vertical-align:4px;margin-left:var(--space-2);padding:4px 10px;border-radius:var(--r-pill);font-size:var(--text-xs,12px);font-weight:var(--fw-bold);letter-spacing:0;background:rgba(255,255,255,.16);color:rgba(255,255,255,.75)}
+.case-status.is-live{background:rgba(94,220,140,.2);color:#8df0b4}
 .case-quote{font-size:var(--text-lg);font-weight:var(--fw-bold);line-height:1.7;max-width:480px;margin:0}
 .case-quote em{display:block;margin-top:var(--space-2);font-style:normal;font-weight:var(--fw-medium);opacity:.55;font-size:var(--text-sm)}
-.case-author{margin-top:var(--space-5);font-size:var(--text-sm);color:rgba(255,255,255,.78)}
 .case-more{display:inline-block;margin-top:var(--space-8);font-size:var(--text-sm);font-weight:var(--fw-bold);cursor:pointer;transition:opacity .15s}
 .case-more:hover{opacity:.75}
 .case-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.22);backdrop-filter:blur(6px);color:#fff;cursor:pointer;font-size:24px;line-height:1;display:grid;place-items:center;transition:background .15s}
@@ -191,7 +196,7 @@ h2{font-size:var(--text-3xl);line-height:1.4;margin:0 0 var(--space-4);font-weig
 @keyframes case-kb{from{background-position:38% 50%}to{background-position:62% 50%}}
 @keyframes case-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){.case-card{transform:none;opacity:1;transition:none;animation:none}.case-card.is-active{animation:none}.case-card.is-active .case-inner>*{animation:none}}
-@media(max-width:900px){.case-card{min-height:480px}.case-inner{padding:var(--space-12) var(--space-8)}.case-stat{font-size:48px}}
+@media(max-width:900px){.case-card{min-height:480px}.case-inner{padding:var(--space-12) var(--space-8)}.case-title{font-size:32px}.case-shot{display:none}}
 
 /* 지식 시스템 보드 — status frame(흰 패널 + 상태 행) 스타일. 행들이 차례로 대기→✓ 완료로 점검되는 데모 */
 .kboard{margin-top:var(--space-14);background:linear-gradient(135deg,#e7ecff 0%,#f1e7ff 55%,#ffe9f4 100%);border-radius:var(--r-lg);padding:var(--space-10) var(--space-8);position:relative;overflow:hidden;box-shadow:var(--shadow)}
@@ -308,75 +313,74 @@ const body = `${getNavHtml(null)}
       <div class="wrap rv">
         <div style="text-align:center;margin-bottom:var(--space-16)">
           <h2>실제 결과를 직접 확인해보세요</h2>
-          <p class="desc">가능성 이야기가 아닙니다. 오픈까지 끝낸 사례입니다.<br>업종별로 일정·작업 범위·진행 방식이 어떻게 달라졌는지 확인해 보세요.</p>
+          <p class="desc">가능성 이야기가 아닙니다. 오픈까지 끝낸 사례입니다.<br>운영 중인 사이트는 지금 바로 들어가서 확인할 수 있습니다.</p>
         </div>
         <div class="case-tabs">
           <div class="tab-group">
-            <a class="active" data-cat="fashion">패션</a><a data-cat="b2b">B2B</a><a data-cat="fortune">운세</a><a data-cat="construction">시공</a><a data-cat="finance">경제</a><a data-cat="tech">기술</a>
+            <a class="active" data-cat="store">자사몰</a><a data-cat="landing">랜딩페이지</a><a data-cat="homepage">홈페이지</a><a data-cat="service">웹 서비스</a>
           </div>
-          <a class="tab-all">모든 사례 보기</a>
         </div>
         <div class="case-stage">
           <button class="case-nav prev" type="button" aria-label="이전 사례">‹</button>
           <div class="case-track" id="caseTrack">
-            <article class="case-card case-1" data-cat="fashion">
+            <article class="case-card case-1" data-cat="store">
               <div class="case-inner">
-                <div class="case-brand">패션 브랜드 · 자사몰</div>
-                <div class="case-stat">2.1<small>배</small></div>
-                <div class="case-stat-label">리뉴얼 후 구매 전환</div>
-                <p class="case-quote">“필수 기능부터 잡고 빠르게 오픈한 뒤, 데이터를 보며 개선했어요. 일정도 퀄리티도 놓치지 않았습니다.”<em>여성 패션 D2C 자사몰 리뉴얼</em></p>
-                <div class="case-author">마케팅 담당</div>
-                <a class="case-more">사례 자세히 보기 ›</a>
+                <div class="case-brand">RIFE <span class="case-status is-live">운영 중</span></div>
+                <div class="case-title">러닝 의류 브랜드 자사몰</div>
+                <p class="case-quote">러닝 의류 브랜드 RIFE의 자사몰. 상품 탐색부터 주문까지 브랜드 톤을 유지한 쇼핑 동선으로 구축했습니다.<em>자사몰 개발</em></p>
+                <a class="case-more" href="https://rife.kr" target="_blank" rel="noopener">rife.kr 방문하기 ›</a>
+              </div>
+              <div class="case-shot is-phone" aria-hidden="true">
+                <img src="/cases/rife-mobile.jpg" alt="" loading="lazy"/>
               </div>
             </article>
-            <article class="case-card case-2" data-cat="b2b">
+            <article class="case-card case-2" data-cat="landing">
               <div class="case-inner">
-                <div class="case-brand">B2B 제조사 · 홈페이지</div>
-                <div class="case-stat">3.2<small>배</small></div>
-                <div class="case-stat-label">월 영업 문의</div>
-                <p class="case-quote">“제품 카탈로그와 문의 흐름을 정리하니, 전화보다 온라인 문의가 먼저 늘었습니다.”<em>산업 부품 제조사 홈페이지 제작</em></p>
-                <div class="case-author">영업총괄</div>
-                <a class="case-more">사례 자세히 보기 ›</a>
+                <div class="case-brand">RACE MANAGER <span class="case-status is-live">운영 중</span></div>
+                <div class="case-title">B2B 대회 도입 랜딩페이지</div>
+                <p class="case-quote">대회 운영 서비스 도입을 검토하는 기업·주최사를 위한 랜딩페이지. 도입 문의로 이어지는 한 페이지 구성입니다.<em>랜딩페이지 제작</em></p>
+                <a class="case-more" href="https://racemanager.kr" target="_blank" rel="noopener">racemanager.kr 방문하기 ›</a>
+              </div>
+              <div class="case-shot" aria-hidden="true">
+                <div class="case-shot-bar"><i></i><i></i><i></i><span>racemanager.kr</span></div>
+                <img src="/cases/racemanager.jpg" alt="" loading="lazy"/>
               </div>
             </article>
-            <article class="case-card case-3" data-cat="fortune">
+            <article class="case-card case-3" data-cat="homepage">
               <div class="case-inner">
-                <div class="case-brand">운세 서비스 · 플랫폼</div>
-                <div class="case-stat">18<small>일</small></div>
-                <div class="case-stat-label">기획부터 베타 오픈까지</div>
-                <p class="case-quote">“핵심 운세 흐름과 결제만 먼저 구현해, 빠르게 사용자 반응을 확인했습니다.”<em>모바일 운세 서비스 MVP 구축</em></p>
-                <div class="case-author">대표</div>
-                <a class="case-more">사례 자세히 보기 ›</a>
+                <div class="case-brand">PRIME ENC <span class="case-status is-live">운영 중</span></div>
+                <div class="case-title">난방 관리 업체 홈페이지</div>
+                <p class="case-quote">난방 관리 업체의 회사 홈페이지. 서비스 소개와 문의 동선을 정리해 오픈했습니다.<em>홈페이지 제작</em></p>
+                <a class="case-more" href="https://primeenc.kr" target="_blank" rel="noopener">primeenc.kr 방문하기 ›</a>
+              </div>
+              <div class="case-shot" aria-hidden="true">
+                <div class="case-shot-bar"><i></i><i></i><i></i><span>primeenc.kr</span></div>
+                <img src="/cases/primeenc.jpg" alt="" loading="lazy"/>
               </div>
             </article>
-            <article class="case-card case-4" data-cat="construction">
+            <article class="case-card case-4" data-cat="service">
               <div class="case-inner">
-                <div class="case-brand">인테리어 시공사 · 홈페이지</div>
-                <div class="case-stat">3.4<small>배</small></div>
-                <div class="case-stat-label">월 온라인 견적 문의</div>
-                <p class="case-quote">“시공 포트폴리오와 문의 흐름을 믿음직하게 정리해, 전화보다 온라인 문의가 늘었습니다.”<em>인테리어 시공사 홈페이지 제작</em></p>
-                <div class="case-author">대표</div>
-                <a class="case-more">사례 자세히 보기 ›</a>
+                <div class="case-brand">사주 심리테스트 <span class="case-status">현재 닫힘</span></div>
+                <div class="case-title">바이럴 심리테스트 · 운세 챗봇</div>
+                <p class="case-quote">사주 기반 바이럴 심리테스트 페이지와 운세 챗봇을 함께 구축한 웹 서비스입니다.<em>웹 서비스 개발</em></p>
+              </div>
+              <div class="case-shot" aria-hidden="true">
+                <div class="case-shot-bar"><i></i><i></i><i></i><span>사주BTI · 심리테스트</span></div>
+                <img src="/projects/sajudiary.png" alt="" loading="lazy"/>
               </div>
             </article>
-            <article class="case-card case-5" data-cat="finance">
+            <article class="case-card case-5" data-cat="landing">
               <div class="case-inner">
-                <div class="case-brand">경제 미디어 · 플랫폼</div>
-                <div class="case-stat">2.6<small>배</small></div>
-                <div class="case-stat-label">유료 구독 전환</div>
-                <p class="case-quote">“콘텐츠 구독과 결제 동선을 단순하게 만들었더니 전환이 올라갔습니다.”<em>경제 뉴스레터 구독 플랫폼</em></p>
-                <div class="case-author">운영 담당</div>
-                <a class="case-more">사례 자세히 보기 ›</a>
+                <div class="case-brand">묘수의관점 <span class="case-status">현재 닫힘</span></div>
+                <div class="case-title">유튜브 채널 소개 랜딩</div>
+                <p class="case-quote">유튜버 ‘묘수의관점’ 채널을 소개하는 랜딩페이지를 제작했습니다.<em>랜딩페이지 제작</em></p>
               </div>
             </article>
-            <article class="case-card case-6" data-cat="tech">
+            <article class="case-card case-6" data-cat="landing">
               <div class="case-inner">
-                <div class="case-brand">기술 스타트업 · 랜딩</div>
-                <div class="case-stat">21<small>일</small></div>
-                <div class="case-stat-label">랜딩·가입 플로우 오픈</div>
-                <p class="case-quote">“핵심 가치 제안과 가입 플로우를 먼저 완성해, 출시 일정을 지켰습니다.”<em>SaaS 스타트업 랜딩·온보딩</em></p>
-                <div class="case-author">대표</div>
-                <a class="case-more">사례 자세히 보기 ›</a>
+                <div class="case-brand">ALTA <span class="case-status">현재 닫힘</span></div>
+                <div class="case-title">앱 소개 랜딩페이지</div>
+                <p class="case-quote">앱 ‘alta’를 소개하는 랜딩페이지. 핵심 기능을 한 페이지로 정리했습니다.<em>랜딩페이지 제작</em></p>
               </div>
             </article>
           </div>
@@ -603,7 +607,7 @@ export default function HomePage() {
     }
 
     // 사례 캐러셀 (channel.io 레퍼런스): 연속 6장 + 오토플레이 · 활성 카드 강조 ·
-    // 수치 카운트업 · 콘텐츠 스태거 · Ken Burns. 탭은 해당 카테고리 카드로 이동.
+    // 콘텐츠 스태거 · Ken Burns. 탭은 해당 카테고리 카드로 이동.
     const stage = root.querySelector(".case-stage");
     const track = root.querySelector("#caseTrack");
     const prevBtn = root.querySelector(".case-nav.prev");
@@ -613,34 +617,6 @@ export default function HomePage() {
 
     if (track) {
       const cards = Array.from(track.querySelectorAll(".case-card"));
-
-      // 수치 카운트업: 선두 텍스트 노드에서 목표값·소수자릿수 추출
-      cards.forEach((card) => {
-        const stat = card.querySelector(".case-stat");
-        if (!stat || !stat.firstChild) return;
-        const raw = (stat.firstChild.nodeValue || "").trim();
-        stat._target = parseFloat(raw) || 0;
-        stat._dec = (raw.split(".")[1] || "").length;
-      });
-      const countUp = (card) => {
-        const stat = card.querySelector(".case-stat");
-        if (!stat || !stat.firstChild) return;
-        const target = stat._target, dec = stat._dec;
-        if (reduce) {
-          stat.firstChild.nodeValue = target.toFixed(dec);
-          return;
-        }
-        cancelAnimationFrame(stat._raf);
-        const dur = 900, t0 = performance.now();
-        const tick = (t) => {
-          const p = Math.min(1, (t - t0) / dur);
-          const e = 1 - Math.pow(1 - p, 3);
-          stat.firstChild.nodeValue = (target * e).toFixed(dec);
-          if (p < 1) stat._raf = requestAnimationFrame(tick);
-          else stat.firstChild.nodeValue = target.toFixed(dec);
-        };
-        stat._raf = requestAnimationFrame(tick);
-      };
 
       const center = (i, smooth = true) => {
         i = ((i % cards.length) + cards.length) % cards.length;
@@ -668,7 +644,6 @@ export default function HomePage() {
         cards.forEach((c, i) => c.classList.toggle("is-active", i === idx));
         const cat = cards[idx].dataset.cat;
         tabs.forEach((t) => t.classList.toggle("active", t.dataset.cat === cat));
-        countUp(cards[idx]);
       };
 
       const nearestIdx = () => {
@@ -727,10 +702,6 @@ export default function HomePage() {
         stage?.removeEventListener("focusin", pause);
         stage?.removeEventListener("focusout", resume);
         stage?.removeEventListener("touchstart", pause);
-        cards.forEach((c) => {
-          const s = c.querySelector(".case-stat");
-          if (s) cancelAnimationFrame(s._raf);
-        });
       };
     }
 
