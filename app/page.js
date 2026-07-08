@@ -375,6 +375,10 @@ const body = `${getNavHtml(null)}
                 <div class="case-title">유튜브 채널 소개 랜딩</div>
                 <p class="case-quote">유튜버 ‘묘수의관점’ 채널을 소개하는 랜딩페이지를 제작했습니다.<em>랜딩페이지 제작</em></p>
               </div>
+              <div class="case-shot" aria-hidden="true">
+                <div class="case-shot-bar"><i></i><i></i><i></i><span>묘수의 관점</span></div>
+                <img src="/cases/myosu.jpg" alt="" loading="lazy"/>
+              </div>
             </article>
             <article class="case-card case-6" data-cat="landing">
               <div class="case-inner">
