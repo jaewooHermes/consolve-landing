@@ -12,6 +12,9 @@ const ALLOWED_KEYS = new Set([
   "pages",
   "timeline_weeks",
   "customer",
+  "customer_name",
+  "contact_email",
+  "channel",
   "conversationId",
   "conversation_id",
   "messages",
@@ -43,7 +46,7 @@ function sanitizeBody(body) {
   return { clean };
 }
 
-function normalizeQuoteResponse(upstream) {
+function normalizeQuoteResponse(upstream, quoteApiUrl = "") {
   if (upstream?.status === "needs_more_info") {
     return {
       status: "needs_more_info",
@@ -52,6 +55,9 @@ function normalizeQuoteResponse(upstream) {
       currentMissingField: upstream.currentMissingField || null,
       question: upstream.question || "",
       questions: upstream.questions || [],
+      choices: Array.isArray(upstream.choices) ? upstream.choices : [],
+      choicesMulti: Boolean(upstream.choicesMulti),
+      questionSource: upstream.questionSource || null,
       conversation: upstream.conversation || null,
       message: upstream.answer || upstream?.discord?.content || "정확한 견적을 위해 추가 정보가 필요합니다.",
       source: "quote-server",
@@ -64,10 +70,15 @@ function normalizeQuoteResponse(upstream) {
     estimate?.discord?.content ||
     upstream?.message ||
     "예상 견적을 계산했습니다.";
+  const base = quoteApiUrl.replace(/\/$/, "");
+  const pdfPath = upstream?.pdfUrl || estimate?.pdfUrl || "";
+  const pdfUrl = pdfPath ? (pdfPath.startsWith("http") ? pdfPath : `${base}${pdfPath}`) : null;
 
   return {
     status: "ok",
     estimate,
+    pdfUrl,
+    cta: upstream?.cta || null,
     message,
     conversation: upstream?.conversation || null,
     source: "quote-server",
@@ -126,7 +137,7 @@ export async function POST(request) {
       );
     }
 
-    return json(normalizeQuoteResponse(upstream));
+    return json(normalizeQuoteResponse(upstream, quoteApiUrl));
   } catch {
     return json(
       {

@@ -16,6 +16,7 @@
 import { useEffect, useRef } from "react";
 import { bindConsultationAnalytics } from "./components/consultationAnalytics";
 import { navCss, getNavHtml } from "./components/navHtml";
+import QuoteChatWidget from "./components/QuoteChatWidget";
 
 const css = `
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css');
@@ -747,6 +748,7 @@ export default function HomePage() {
     <div ref={ref}>
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <div dangerouslySetInnerHTML={{ __html: body }} />
+      <QuoteChatWidget />
     </div>
   );
 }
