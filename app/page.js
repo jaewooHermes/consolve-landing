@@ -184,6 +184,14 @@ h2{font-size:var(--text-3xl);line-height:1.4;margin:0 0 var(--space-4);font-weig
 .case-shot img{display:block;width:100%;height:330px;object-fit:cover;object-position:top}
 .case-shot.is-phone{flex:0 0 auto;width:238px;border-radius:30px;padding:10px;background:#0c0d10;border:1px solid rgba(255,255,255,.18)}
 .case-shot.is-phone img{height:452px;border-radius:22px}
+.case-shot.is-phone.is-contain{background:#0c0d10}
+.case-shot.is-phone.is-contain img{object-fit:contain;object-position:center}
+.case-shots{position:relative;z-index:2;flex:0 0 auto;width:400px;height:340px;margin-right:var(--space-16)}
+.case-shots .case-shot{position:absolute;margin:0}
+.case-shots .case-shot.is-web{top:0;left:0;width:340px}
+.case-shots .case-shot.is-web img{height:210px}
+.case-shots .case-shot.is-phone{bottom:0;right:0;width:150px;z-index:2;box-shadow:0 20px 46px rgba(0,0,0,.5)}
+.case-shots .case-shot.is-phone img{height:286px}
 .case-status{display:inline-block;vertical-align:4px;margin-left:var(--space-2);padding:4px 10px;border-radius:var(--r-pill);font-size:var(--text-xs,12px);font-weight:var(--fw-bold);letter-spacing:0;background:rgba(255,255,255,.16);color:rgba(255,255,255,.75)}
 .case-status.is-live{background:rgba(94,220,140,.2);color:#8df0b4}
 .case-quote{font-size:var(--text-lg);font-weight:var(--fw-bold);line-height:1.7;max-width:480px;margin:0}
@@ -196,7 +204,7 @@ h2{font-size:var(--text-3xl);line-height:1.4;margin:0 0 var(--space-4);font-weig
 @keyframes case-kb{from{background-position:38% 50%}to{background-position:62% 50%}}
 @keyframes case-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){.case-card{transform:none;opacity:1;transition:none;animation:none}.case-card.is-active{animation:none}.case-card.is-active .case-inner>*{animation:none}}
-@media(max-width:900px){.case-card{min-height:480px}.case-inner{padding:var(--space-12) var(--space-8)}.case-title{font-size:32px}.case-shot{display:none}}
+@media(max-width:900px){.case-card{min-height:480px}.case-inner{padding:var(--space-12) var(--space-8)}.case-title{font-size:32px}.case-shot,.case-shots{display:none}}
 
 /* 지식 시스템 보드 — status frame(흰 패널 + 상태 행) 스타일. 행들이 차례로 대기→✓ 완료로 점검되는 데모 */
 .kboard{margin-top:var(--space-14);background:linear-gradient(135deg,#e7ecff 0%,#f1e7ff 55%,#ffe9f4 100%);border-radius:var(--r-lg);padding:var(--space-10) var(--space-8);position:relative;overflow:hidden;box-shadow:var(--shadow)}
@@ -330,8 +338,14 @@ const body = `${getNavHtml(null)}
                 <p class="case-quote">러닝 의류 브랜드 RIFE의 자사몰. 상품 탐색부터 주문까지 브랜드 톤을 유지한 쇼핑 동선으로 구축했습니다.<em>자사몰 개발</em></p>
                 <a class="case-more" href="https://rife.kr" target="_blank" rel="noopener">rife.kr 방문하기 ›</a>
               </div>
-              <div class="case-shot is-phone" aria-hidden="true">
-                <img src="/cases/rife-mobile.jpg" alt="" loading="lazy"/>
+              <div class="case-shots" aria-hidden="true">
+                <div class="case-shot is-web">
+                  <div class="case-shot-bar"><i></i><i></i><i></i><span>rife.kr</span></div>
+                  <img src="/cases/rife-web.jpg" alt="" loading="lazy"/>
+                </div>
+                <div class="case-shot is-phone">
+                  <img src="/cases/rife-mobile.jpg" alt="" loading="lazy"/>
+                </div>
               </div>
             </article>
             <article class="case-card case-2" data-cat="landing">
@@ -364,8 +378,7 @@ const body = `${getNavHtml(null)}
                 <div class="case-title">바이럴 심리테스트 · 운세 챗봇</div>
                 <p class="case-quote">사주 기반 바이럴 심리테스트 페이지와 운세 챗봇을 함께 구축한 웹 서비스입니다.<em>웹 서비스 개발</em></p>
               </div>
-              <div class="case-shot" aria-hidden="true">
-                <div class="case-shot-bar"><i></i><i></i><i></i><span>사주BTI · 심리테스트</span></div>
+              <div class="case-shot is-phone is-contain" aria-hidden="true">
                 <img src="/projects/sajudiary.png" alt="" loading="lazy"/>
               </div>
             </article>
@@ -385,6 +398,10 @@ const body = `${getNavHtml(null)}
                 <div class="case-brand">ALTA <span class="case-status">현재 닫힘</span></div>
                 <div class="case-title">앱 소개 랜딩페이지</div>
                 <p class="case-quote">앱 ‘alta’를 소개하는 랜딩페이지. 핵심 기능을 한 페이지로 정리했습니다.<em>랜딩페이지 제작</em></p>
+              </div>
+              <div class="case-shot" aria-hidden="true">
+                <div class="case-shot-bar"><i></i><i></i><i></i><span>ALTA · 앱 소개</span></div>
+                <img src="/cases/alta.jpg" alt="" loading="lazy"/>
               </div>
             </article>
           </div>
